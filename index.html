@@ -44,7 +44,7 @@
 </head>
 <body class="min-h-screen pb-24 bg-[#0D0E12] text-gray-100">
 
-  <!-- FIRST-TIME IDENTITY MODAL (NAME & USERNAME ONLY, AUTO REMEMBERED) -->
+  <!-- FIRST-TIME IDENTITY MODAL (AUTO REMEMBERED) -->
   <div id="gate-modal" class="fixed inset-0 z-50 bg-[#0D0E12]/95 backdrop-blur-md flex items-center justify-center p-4">
     <div class="w-full max-w-md bg-[#161821] border border-[#282C3C] rounded-3xl p-6 shadow-2xl space-y-4">
       <div class="flex items-center justify-between border-b border-[#282C3C] pb-3.5">
@@ -67,13 +67,13 @@
       <div class="space-y-3">
         <div>
           <label class="block text-xs font-medium text-gray-300 mb-1">Display Name (ပြသမည့် နာမည်)</label>
-          <input id="gate-name" type="text" placeholder="ဥပမာ - Gogogo"
+          <input id="gate-name" type="text" placeholder="ဥပမာ - Tobi"
             class="w-full bg-[#1E212D] border border-[#282C3C] focus:border-[#FF6B2B] rounded-xl px-3.5 py-2.5 text-sm text-white outline-none transition" />
         </div>
 
         <div>
           <label class="block text-xs font-medium text-gray-300 mb-1">Username (@username)</label>
-          <input id="gate-handle" type="text" placeholder="ဥပမာ - gogogo1027"
+          <input id="gate-handle" type="text" placeholder="ဥပမာ - tobi1027"
             class="w-full bg-[#1E212D] border border-[#282C3C] focus:border-[#FF6B2B] rounded-xl px-3.5 py-2.5 text-sm text-white outline-none transition" />
         </div>
       </div>
@@ -95,9 +95,12 @@
           M
         </div>
         <div class="truncate">
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 flex-wrap">
             <span class="font-extrabold text-base tracking-tight text-white">Memo</span>
             <span id="top-mood-pill" class="text-[11px] px-2 py-0.5 rounded-full bg-[#1E212D] border border-[#282C3C] text-gray-300">Chill</span>
+            <span id="tobi-admin-badge" class="hidden text-[10px] px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-300 font-bold">
+              ★ Tobi Mod
+            </span>
           </div>
           <div id="top-identity" class="text-xs text-[#FF944D] font-medium truncate"></div>
         </div>
@@ -133,14 +136,30 @@
         <textarea id="post-input" rows="3" placeholder="သူငယ်ချင်းတွေနဲ့ မျှဝေချင်တဲ့ အကြောင်းအရာ ရေးလိုက်ပါ..."
           class="w-full bg-[#1E212D] border border-[#282C3C] focus:border-[#FF6B2B] rounded-xl p-3 text-sm text-white placeholder-gray-500 outline-none resize-none transition"></textarea>
 
+        <!-- Photo / Video attachment for Post -->
+        <div id="post-media-preview" class="hidden relative bg-[#1E212D] border border-[#282C3C] rounded-xl p-2.5 space-y-2">
+          <div class="flex items-center justify-between text-xs text-gray-300">
+            <span id="post-media-name" class="truncate font-medium text-[#FF944D]"></span>
+            <button id="btn-clear-post-media" type="button" class="text-red-400 hover:underline text-xs font-semibold">ဖယ်မည်</button>
+          </div>
+          <div id="post-media-box"></div>
+        </div>
+
         <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 flex-wrap">
             <select id="post-tag" class="bg-[#1E212D] border border-[#282C3C] rounded-xl px-2.5 py-1.5 text-xs text-gray-300 outline-none">
               <option value="General">💬 General</option>
               <option value="Hangout">🎧 Hangout</option>
               <option value="Night Owl">🌙 Night Owl</option>
               <option value="Random">⚡ Random</option>
             </select>
+
+            <label class="cursor-pointer bg-[#1E212D] border border-[#282C3C] hover:border-[#FF6B2B] rounded-xl px-2.5 py-1.5 text-xs text-gray-200 flex items-center gap-1 transition">
+              <i data-lucide="image-plus" class="w-3.5 h-3.5 text-[#FF944D]"></i>
+              <span>Photo / Video</span>
+              <input id="post-media-input" type="file" accept="image/*,video/*" class="hidden" />
+            </label>
+
             <span id="post-char-count" class="text-[11px] text-gray-500">0 / 500</span>
           </div>
 
@@ -166,41 +185,85 @@
       <div id="feed-list" class="space-y-3"></div>
     </section>
 
-    <!-- ==================== TAB 2: CHAT ==================== -->
+    <!-- ==================== TAB 2: CHAT (LOUNGE + PERSON TO PERSON DM) ==================== -->
     <section id="tab-chat" class="hidden space-y-3">
+      <!-- Friends Directory for Person-to-Person Chat -->
       <div class="bg-[#161821] border border-[#282C3C] rounded-2xl p-3 space-y-2">
         <div class="flex items-center justify-between">
           <span class="text-xs font-bold text-gray-300 flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-            <span>Friends Directory</span>
+            <span>Friends Directory (နှိပ်ပြီး 1-on-1 စကားပြောပါ)</span>
           </span>
           <span id="friends-count" class="text-[11px] text-gray-400">0 members</span>
         </div>
         <div id="friends-strip" class="flex gap-2 overflow-x-auto pb-1"></div>
       </div>
 
+      <!-- Mode Switcher: Lounge Chat vs Person-to-Person DM -->
+      <div class="grid grid-cols-2 gap-2 bg-[#161821] border border-[#282C3C] rounded-2xl p-1.5">
+        <button id="btn-mode-lounge" type="button"
+          class="py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-[#FF6B2B] to-[#FF944D] text-white transition">
+          💬 Lounge Chat (အားလုံး)
+        </button>
+        <button id="btn-mode-dm" type="button"
+          class="py-2 rounded-xl text-xs font-bold bg-[#1E212D] text-gray-300 hover:text-white transition">
+          🔒 Person to Person DM
+        </button>
+      </div>
+
+      <!-- DM Target Selector (shown in DM mode) -->
+      <div id="dm-target-bar" class="hidden bg-[#161821] border border-[#282C3C] rounded-2xl p-3 flex items-center justify-between gap-2">
+        <div class="text-xs">
+          <span class="text-gray-400">Chatting with:</span>
+          <span id="dm-partner-label" class="font-bold text-[#FF944D] ml-1">သူငယ်ချင်း တစ်ယောက် ရွေးပါ</span>
+        </div>
+        <select id="dm-partner-select"
+          class="bg-[#1E212D] border border-[#282C3C] focus:border-[#FF6B2B] rounded-xl px-2.5 py-1.5 text-xs text-white outline-none max-w-[55%]">
+          <option value="">-- Friend ရွေးပါ --</option>
+        </select>
+      </div>
+
+      <!-- Chat Box -->
       <div class="bg-[#161821] border border-[#282C3C] rounded-2xl p-4 space-y-3">
         <div class="flex items-center justify-between border-b border-[#282C3C] pb-2.5">
           <div>
-            <h2 class="text-sm font-bold text-white flex items-center gap-2">
+            <h2 id="chat-room-title" class="text-sm font-bold text-white flex items-center gap-2">
               <i data-lucide="message-circle" class="w-4 h-4 text-[#FF6B2B]"></i>
               <span>Friends Lounge Chat</span>
             </h2>
-            <p class="text-[11px] text-gray-400">ကိုယ်ပို့ထားသော စာများကို ကိုယ်တိုင် ဖျက်နိုင်ပါသည်။</p>
+            <p id="chat-room-subtitle" class="text-[11px] text-gray-400">
+              ကိုယ်ပို့ထားသော စာများကို ဖျက်နိုင်ပြီး Tobi (@tobi1027) က အားလုံး၏ စာများကို ဖျက်နိုင်ပါသည်။
+            </p>
           </div>
           <span id="chat-count-badge" class="text-[11px] px-2.5 py-1 rounded-full bg-[#1E212D] border border-[#282C3C] text-gray-300">
             0 msgs
           </span>
         </div>
 
-        <div id="chat-list" class="space-y-2.5 max-h-[52vh] overflow-y-auto pr-1"></div>
+        <div id="chat-list" class="space-y-2.5 max-h-[50vh] overflow-y-auto pr-1"></div>
+
+        <!-- Chat Photo / Video Preview -->
+        <div id="chat-media-preview" class="hidden bg-[#1E212D] border border-[#282C3C] rounded-xl p-2.5 space-y-2">
+          <div class="flex items-center justify-between text-xs">
+            <span id="chat-media-name" class="truncate font-medium text-[#FF944D]"></span>
+            <button id="btn-clear-chat-media" type="button" class="text-red-400 hover:underline text-xs font-semibold">ဖယ်မည်</button>
+          </div>
+          <div id="chat-media-box"></div>
+        </div>
 
         <div class="flex items-center gap-2 pt-1 border-t border-[#282C3C]">
+          <label title="Photo / Video ပို့ရန်"
+            class="cursor-pointer p-2.5 rounded-xl bg-[#1E212D] border border-[#282C3C] hover:border-[#FF6B2B] text-gray-200 transition shrink-0">
+            <i data-lucide="camera" class="w-4 h-4 text-[#FF944D]"></i>
+            <input id="chat-media-input" type="file" accept="image/*,video/*" class="hidden" />
+          </label>
+
           <input id="chat-input" type="text" placeholder="စာတစ်စောင် ရိုက်ထည့်ပါ..."
-            class="flex-1 bg-[#1E212D] border border-[#282C3C] focus:border-[#FF6B2B] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 outline-none" />
-          <button id="btn-send-chat"
-            class="px-4 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-[#FF6B2B] to-[#FF944D] hover:opacity-95 transition flex items-center gap-1.5">
-            <span>ပို့မည်</span>
+            class="flex-1 min-w-0 bg-[#1E212D] border border-[#282C3C] focus:border-[#FF6B2B] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 outline-none" />
+
+          <button id="btn-send-chat" type="button"
+            class="px-4 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-[#FF6B2B] to-[#FF944D] hover:opacity-95 transition shrink-0">
+            ပို့မည်
           </button>
         </div>
       </div>
@@ -305,6 +368,13 @@
           class="w-full py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-[#FF6B2B] to-[#FF944D] hover:opacity-95 transition">
           Profile ပြောင်းလဲမှုများ သိမ်းမည်
         </button>
+
+        <div class="pt-2 border-t border-[#282C3C]">
+          <button id="btn-clear-my-content" type="button"
+            class="w-full py-2.5 rounded-xl text-xs font-bold bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 transition">
+            🗑️ ကိုယ်တင်ထားသော Post နှင့် Chat စာများကို ရှင်းမည်
+          </button>
+        </div>
       </div>
     </section>
 
@@ -317,12 +387,9 @@
         <i data-lucide="flame" class="w-4 h-4"></i>
         <span>Feed</span>
       </button>
-      <button data-nav="chat" class="nav-item flex flex-col items-center gap-1 py-1.5 rounded-xl text-[11px] font-semibold text-gray-400">
-        <i data-lucide="message-square" class="w-4 h-4"></i>
-        <span>Chat</span>
-      </button>
+
       <button data-nav="voice" class="nav-item flex flex-col items-center gap-1 py-1.5 rounded-xl text-[11px] font-semibold text-gray-400">
-        <i data-lucide="mic" class="w-4 h-4"></i>
+        <i data-lucide="mic" class="w-4 h-4"></i
         <span>Voice</span>
       </button>
       <button data-nav="profile" class="nav-item flex flex-col items-center gap-1 py-1.5 rounded-xl text-[11px] font-semibold text-gray-400">
@@ -348,9 +415,23 @@
       bio: "Memo friend"
     };
 
+    // Tobi special account: name = Tobi, username = tobi1027
+    function isTobiAccount(p = profile) {
+      return (
+        String(p?.name || "").trim().toLowerCase() === "tobi" &&
+        String(p?.handle || "").trim().toLowerCase() === "tobi1027"
+      );
+    }
+
     let voiceState = { inRoom: false, muted: false, handRaised: false };
+    let chatMode = "lounge"; // "lounge" | "dm"
+    let selectedDmHandle = "";
+    let pendingPostMedia = null; // { type: "image" | "video", dataUrl, name }
+    let pendingChatMedia = null; // { type: "image" | "video", dataUrl, name }
+
     let latestPosts = {};
     let latestMessages = {};
+    let latestDms = {};
     let latestUsers = {};
     let latestVoice = {};
 
@@ -446,6 +527,9 @@
       localStorage.setItem("memo_remember_profile", JSON.stringify(profile));
       localStorage.setItem("memo_remember_uid", uid);
 
+      const tobiMod = isTobiAccount(profile);
+      document.getElementById("tobi-admin-badge").classList.toggle("hidden", !tobiMod);
+
       const identityLabel = profile.handle ? `${profile.name || "Friend"} (@${profile.handle})` : "";
       document.getElementById("top-identity").textContent = profile.handle ? `@${profile.handle}` : "";
       document.getElementById("top-mood-pill").textContent = profile.mood || "Chill";
@@ -486,6 +570,27 @@
       alert("Profile မှတ်သားပြီးပါပြီ!");
     });
 
+    // Clear own posts and chat messages button
+    document.getElementById("btn-clear-my-content").addEventListener("click", async () => {
+      if (!confirm("ကိုယ်တင်ထားသော Post များနှင့် Chat စာများကို ဖျက်မှာ သေချာလား?")) return;
+      try {
+        const postDeletes = Object.entries(latestPosts || {})
+          .filter(([, p]) => p && (p.uid === uid || (isTobiAccount() && p.handle === profile.handle)))
+          .map(([id]) => fbDelete(`posts/${id}`));
+
+        const msgDeletes = Object.entries(latestMessages || {})
+          .filter(([, m]) => m && (m.uid === uid || (isTobiAccount() && m.handle === profile.handle)))
+          .map(([id]) => fbDelete(`messages/${id}`));
+
+        await Promise.all([...postDeletes, ...msgDeletes]);
+        await syncAllData();
+        alert("ကိုယ်တင်ထားသော Post နှင့် Chat စာများ ရှင်းလင်းပြီးပါပြီ!");
+      } catch (err) {
+        alert("ရှင်းလင်းမရပါ: " + err.message);
+      }
+    });
+
+    // Navigation Tabs
     const navItems = document.querySelectorAll(".nav-item");
     const tabSections = {
       feed: document.getElementById("tab-feed"),
@@ -512,6 +617,67 @@
       });
     });
 
+    // Media File Reader helper (Image & Video)
+    function readMediaFile(file, maxBytes = 8 * 1024 * 1024) {
+      return new Promise((resolve, reject) => {
+        if (!file) return reject(new Error("File မရွေးရသေးပါ"));
+        if (file.size > maxBytes) {
+          return reject(new Error("File size ကြီးလွန်းပါသည် (8MB အောက် ဖိုင်ရွေးပါ)"));
+        }
+        const isVideo = file.type.startsWith("video/");
+        const isImage = file.type.startsWith("image/");
+        if (!isVideo && !isImage) {
+          return reject(new Error("Photo သို့မဟုတ် Video ဖိုင်သာ ရွေးပါ"));
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+          resolve({
+            type: isVideo ? "video" : "image",
+            dataUrl: reader.result,
+            name: file.name
+          });
+        };
+        reader.onerror = () => reject(new Error("File ဖတ်မရပါ"));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function renderMediaNode(media, compact = false) {
+      if (!media || !media.dataUrl) return "";
+      if (media.type === "video") {
+        return `<video src="${media.dataUrl}" controls playsinline class="w-full ${compact ? "max-h-48" : "max-h-72"} rounded-xl bg-black mt-1.5"></video>`;
+      }
+      return `<img src="${media.dataUrl}" alt="${esc(media.name || "photo")}" class="w-full ${compact ? "max-h-52" : "max-h-80"} object-cover rounded-xl bg-black/40 mt-1.5" />`;
+    }
+
+    // Post Media Handling
+    const postMediaInput = document.getElementById("post-media-input");
+    const postMediaPreview = document.getElementById("post-media-preview");
+    const postMediaName = document.getElementById("post-media-name");
+    const postMediaBox = document.getElementById("post-media-box");
+
+    postMediaInput.addEventListener("change", async () => {
+      const file = postMediaInput.files?.[0];
+      if (!file) return;
+      try {
+        pendingPostMedia = await readMediaFile(file);
+        postMediaName.textContent = `${pendingPostMedia.type === "video" ? "🎬" : "🖼️"} ${pendingPostMedia.name}`;
+        postMediaBox.innerHTML = renderMediaNode(pendingPostMedia, true);
+        postMediaPreview.classList.remove("hidden");
+      } catch (err) {
+        alert(err.message);
+        postMediaInput.value = "";
+      }
+    });
+
+    document.getElementById("btn-clear-post-media").addEventListener("click", () => {
+      pendingPostMedia = null;
+      postMediaInput.value = "";
+      postMediaBox.innerHTML = "";
+      postMediaPreview.classList.add("hidden");
+    });
+
+    // Feed Composer & Feed Rendering
     const postInput = document.getElementById("post-input");
     const postCharCount = document.getElementById("post-char-count");
     const feedSearch = document.getElementById("feed-search");
@@ -526,7 +692,7 @@
       if (!profile.name || !profile.handle) return checkRememberedUser();
       const text = postInput.value.trim().slice(0, 500);
       const tag = document.getElementById("post-tag").value;
-      if (!text) return;
+      if (!text && !pendingPostMedia) return;
 
       try {
         await fbPost("posts", {
@@ -536,12 +702,17 @@
           mood: profile.mood || "Chill",
           tag,
           text,
+          media: pendingPostMedia || null,
           likes: 0,
           comments: {},
           createdAt: Date.now()
         });
         postInput.value = "";
         postCharCount.textContent = "0 / 500";
+        pendingPostMedia = null;
+        postMediaInput.value = "";
+        postMediaBox.innerHTML = "";
+        postMediaPreview.classList.add("hidden");
         await syncAllData();
       } catch (err) {
         alert("Post တင်မရပါ: " + err.message);
@@ -557,11 +728,12 @@
 
     window.editOwnPost = async (postId, oldText) => {
       const post = latestPosts[postId];
-      if (!post || post.uid !== uid) return;
-      const updated = prompt("ကိုယ့် Post စာသားကို ပြန်ပြင်ပါ:", oldText || "");
+      if (!post) return;
+      if (post.uid !== uid && !isTobiAccount()) return;
+      const updated = prompt("Post စာသားကို ပြန်ပြင်ပါ:", oldText || "");
       if (updated === null) return;
       const trimmed = updated.trim().slice(0, 500);
-      if (!trimmed) return;
+      if (!trimmed && !post.media) return;
       try {
         await fbPatch(`posts/${postId}`, { text: trimmed, editedAt: Date.now() });
         await syncAllData();
@@ -570,9 +742,10 @@
       }
     };
 
-    window.deleteOwnPost = async (postId) => {
+    window.deletePostItem = async (postId) => {
       const post = latestPosts[postId];
-      if (!post || post.uid !== uid) return;
+      if (!post) return;
+      if (post.uid !== uid && !isTobiAccount()) return;
       if (!confirm("ဒီ Post ကို ဖျက်မှာ သေချာလား?")) return;
       try {
         await fbDelete(`posts/${postId}`);
@@ -582,6 +755,7 @@
       }
     };
 
+    
     window.addPostComment = async (postId) => {
       if (!profile.name || !profile.handle) return checkRememberedUser();
       const input = document.getElementById(`cmt-input-${postId}`);
@@ -604,9 +778,10 @@
       }
     };
 
-    window.deleteOwnComment = async (postId, commentId) => {
+    window.deleteCommentItem = async (postId, commentId) => {
       const cmt = latestPosts?.[postId]?.comments?.[commentId];
-      if (!cmt || cmt.uid !== uid) return;
+      if (!cmt) return;
+      if (cmt.uid !== uid && !isTobiAccount()) return;
       try {
         await fbDelete(`posts/${postId}/comments/${commentId}`);
         await syncAllData();
@@ -616,14 +791,15 @@
     function renderFeed(rawPosts) {
       const container = document.getElementById("feed-list");
       const query = (feedSearch.value || "").trim().toLowerCase();
+      const canModAll = isTobiAccount();
 
       const items = Object.entries(rawPosts || {})
         .map(([id, p]) => ({ id, ...p }))
-        .filter(p => p && typeof p.text === "string" && p.text.trim().length > 0)
+        .filter(p => p && ((typeof p.text === "string" && p.text.trim().length > 0) || p.media))
         .filter(p => {
           if (!query) return true;
           return (
-            p.text.toLowerCase().includes(query) ||
+            (p.text || "").toLowerCase().includes(query) ||
             (p.name || "").toLowerCase().includes(query) ||
             (p.handle || "").toLowerCase().includes(query) ||
             (p.tag || "").toLowerCase().includes(query)
@@ -632,7 +808,7 @@
         .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
       document.getElementById("post-count-badge").textContent = `${items.length} Posts`;
-      const myPostsCount = Object.values(rawPosts || {}).filter(p => p && p.uid === uid && p.text).length;
+      const myPostsCount = Object.values(rawPosts || {}).filter(p => p && p.uid === uid && ((p.text && p.text.trim()) || p.media)).length;
       document.getElementById("stat-my-posts").textContent = String(myPostsCount);
 
       if (!items.length) {
@@ -647,13 +823,15 @@
 
       container.innerHTML = items.map(p => {
         const isMine = p.uid === uid;
+        const canEdit = isMine || canModAll;
+        const canDelete = isMine || canModAll;
         const commentsArr = Object.entries(p.comments || {})
           .map(([cid, c]) => ({ cid, ...c }))
           .filter(c => c && c.text)
           .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
 
         const commentsHtml = commentsArr.map(c => {
-          const isMyCmt = c.uid === uid;
+          const canDelCmt = c.uid === uid || canModAll;
           return `
             <div class="flex items-start justify-between gap-2 bg-[#161821] border border-[#282C3C]/80 rounded-xl px-3 py-2 text-xs">
               <div class="min-w-0">
@@ -662,7 +840,7 @@
               </div>
               <div class="flex items-center gap-2 shrink-0">
                 <span class="text-[10px] text-gray-500">${fmtTime(c.createdAt)}</span>
-                ${isMyCmt ? `<button onclick="window.deleteOwnComment('${p.id}', '${c.cid}')" class="text-[10px] text-red-400 hover:underline">ဖျက်</button>` : ""}
+                ${canDelCmt ? `<button onclick="window.deleteCommentItem('${p.id}', '${c.cid}')" class="text-[10px] text-red-400 hover:underline">ဖျက်</button>` : ""}
               </div>
             </div>
           `;
@@ -682,21 +860,26 @@
                 </div>
               </div>
 
-              ${isMine ? `
+              ${(canEdit || canDelete) ? `
                 <div class="flex items-center gap-1.5">
-                  <button onclick="window.editOwnPost('${p.id}', ${JSON.stringify(p.text)})"
-                    class="text-[11px] px-2.5 py-1 rounded-lg bg-[#1E212D] border border-[#282C3C] text-gray-300 hover:border-[#FF6B2B]">
-                    ပြင်မည်
-                  </button>
-                  <button onclick="window.deleteOwnPost('${p.id}')"
-                    class="text-[11px] px-2.5 py-1 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20">
-                    ဖျက်မည်
-                  </button>
+                  ${canEdit ? `
+                    <button onclick="window.editOwnPost('${p.id}', ${JSON.stringify(p.text || "")})"
+                      class="text-[11px] px-2.5 py-1 rounded-lg bg-[#1E212D] border border-[#282C3C] text-gray-300 hover:border-[#FF6B2B]">
+                      ပြင်မည်
+                    </button>
+                  ` : ""}
+                  ${canDelete ? `
+                    <button onclick="window.deletePostItem('${p.id}')"
+                      class="text-[11px] px-2.5 py-1 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20">
+                      ဖျက်မည်
+                    </button>
+                  ` : ""}
                 </div>
               ` : ""}
             </div>
 
-            <p class="text-sm text-gray-100 whitespace-pre-wrap break-words leading-relaxed">${esc(p.text)}</p>
+            ${p.text ? `<p class="text-sm text-gray-100 whitespace-pre-wrap break-words leading-relaxed">${esc(p.text)}</p>` : ""}
+            ${renderMediaNode(p.media, false)}
 
             <div class="flex items-center justify-between pt-1 border-t border-[#282C3C]/70">
               <button onclick="window.toggleLikePost('${p.id}', ${p.likes || 0})"
@@ -722,12 +905,131 @@
       }).join("");
     }
 
+    // Chat Mode: Lounge vs Person-to-Person DM
+    const btnModeLounge = document.getElementById("btn-mode-lounge");
+    const btnModeDm = document.getElementById("btn-mode-dm");
+    const dmTargetBar = document.getElementById("dm-target-bar");
+    const dmPartnerSelect = document.getElementById("dm-partner-select");
+    const dmPartnerLabel = document.getElementById("dm-partner-label");
+    const chatRoomTitle = document.getElementById("chat-room-title");
+    const chatRoomSubtitle = document.getElementById("chat-room-subtitle");
+
+    function setChatMode(mode, partnerHandle = selectedDmHandle) {
+      chatMode = mode;
+      if (partnerHandle) selectedDmHandle = partnerHandle;
+
+      const isDm = chatMode === "dm";
+      btnModeLounge.className = isDm
+        ? "py-2 rounded-xl text-xs font-bold bg-[#1E212D] text-gray-300 hover:text-white transition"
+        : "py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-[#FF6B2B] to-[#FF944D] text-white transition";
+
+      btnModeDm.className = isDm
+        ? "py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-[#FF6B2B] to-[#FF944D] text-white transition"
+        : "py-2 rounded-xl text-xs font-bold bg-[#1E212D] text-gray-300 hover:text-white transition";
+
+      dmTargetBar.classList.toggle("hidden", !isDm);
+
+      if (isDm) {
+        chatRoomTitle.innerHTML = `<i data-lucide="lock" class="w-4 h-4 text-[#FF6B2B]"></i><span>Person to Person DM ${selectedDmHandle ? `• @${esc(selectedDmHandle)}` : ""}</span>`;
+        chatRoomSubtitle.textContent = selectedDmHandle
+          ? `@${selectedDmHandle} နဲ့ နှစ်ယောက်ချင်း စကားပြောနေပါသည်။`
+          : "အပေါ်မှ သူငယ်ချင်း တစ်ယောက်ကို ရွေးပြီး စကားစပြောပါ။";
+      } else {
+        chatRoomTitle.innerHTML = `<i data-lucide="message-circle" class="w-4 h-4 text-[#FF6B2B]"></i><span>Friends Lounge Chat</span>`;
+        chatRoomSubtitle.textContent = "ကိုယ်ပို့ထားသော စာများကို ဖျက်နိုင်ပြီး Tobi (@tobi1027) က အားလုံး၏ စာများကို ဖျက်နိုင်ပါသည်။";
+      }
+
+      lucide.createIcons();
+      renderCurrentChatView();
+    }
+
+    btnModeLounge.addEventListener("click", () => setChatMode("lounge"));
+    btnModeDm.addEventListener("click", () => setChatMode("dm"));
+
+    dmPartnerSelect.addEventListener("change", () => {
+      selectedDmHandle = dmPartnerSelect.value;
+      dmPartnerLabel.textContent = selectedDmHandle ? `@${selectedDmHandle}` : "သူငယ်ချင်း တစ်ယောက် ရွေးပါ";
+      setChatMode("dm", selectedDmHandle);
+    });
+
+    window.startDmWith = (handle) => {
+      const clean = String(handle || "").replace(/^@+/, "");
+      if (!clean) return;
+      selectedDmHandle = clean;
+      dmPartnerSelect.value = clean;
+      dmPartnerLabel.textContent = `@${clean}`;
+      // Switch to Chat tab & DM mode
+      document.querySelector('.nav-item[data-nav="chat"]')?.click();
+      setChatMode("dm", clean);
+    };
+
+    function getDmThreadKey(h1, h2) {
+      const a = String(h1 || "").toLowerCase();
+      const b = String(h2 || "").toLowerCase();
+      return [a, b].sort().join("__");
+    }
+
+    // Chat Photo / Video Attachment
+    const chatMediaInput = document.getElementById("chat-media-input");
+    const chatMediaPreview = document.getElementById("chat-media-preview");
+    const chatMediaName = document.getElementById("chat-media-name");
+    const chatMediaBox = document.getElementById("chat-media-box");
+
+    chatMediaInput.addEventListener("change", async () => {
+      const file = chatMediaInput.files?.[0];
+      if (!file) return;
+      try {
+        pendingChatMedia = await readMediaFile(file);
+        chatMediaName.textContent = `${pendingChatMedia.type === "video" ? "🎬" : "🖼️"} ${pendingChatMedia.name}`;
+        chatMediaBox.innerHTML = renderMediaNode(pendingChatMedia, true);
+        chatMediaPreview.classList.remove("hidden");
+      } catch (err) {
+        alert(err.message);
+        chatMediaInput.value = "";
+      }
+    });
+
+    document.getElementById("btn-clear-chat-media").addEventListener("click", () => {
+      pendingChatMedia = null;
+      chatMediaInput.value = "";
+      chatMediaBox.innerHTML = "";
+      chatMediaPreview.classList.add("hidden");
+    });
+
     const chatInput = document.getElementById("chat-input");
 
     async function sendChatMessage() {
       if (!profile.name || !profile.handle) return checkRememberedUser();
       const text = chatInput.value.trim();
-      if (!text) return;
+      if (!text && !pendingChatMedia) return;
+
+      if (chatMode === "dm") {
+        if (!selectedDmHandle) {
+          alert("1-on-1 စာပို့ရန် သူငယ်ချင်း တစ်ယောက် ရွေးပါ။");
+          return;
+        }
+        const threadKey = getDmThreadKey(profile.handle, selectedDmHandle);
+        try {
+          await fbPost(`direct_messages/${threadKey}`, {
+            uid,
+            name: profile.name,
+            handle: profile.handle,
+            toHandle: selectedDmHandle,
+            text,
+            media: pendingChatMedia || null,
+            createdAt: Date.now()
+          });
+          chatInput.value = "";
+          pendingChatMedia = null;
+          chatMediaInput.value = "";
+          chatMediaBox.innerHTML = "";
+          chatMediaPreview.classList.add("hidden");
+          await syncAllData();
+        } catch (err) {
+          alert("DM စာပို့မရပါ: " + err.message);
+        }
+        return;
+      }
 
       try {
         await fbPost("messages", {
@@ -735,18 +1037,25 @@
           name: profile.name,
           handle: profile.handle,
           text,
+          media: pendingChatMedia || null,
           createdAt: Date.now()
         });
         chatInput.value = "";
+        pendingChatMedia = null;
+        chatMediaInput.value = "";
+        chatMediaBox.innerHTML = "";
+        chatMediaPreview.classList.add("hidden");
         await syncAllData();
       } catch (err) {
         alert("စာပို့မရပါ: " + err.message);
       }
     }
 
-    window.deleteOwnChatMessage = async (msgId) => {
+    // Tobi (@tobi1027) can delete ANY lounge chat message; others can delete their own
+    window.deleteChatMessageItem = async (msgId) => {
       const msg = latestMessages[msgId];
-      if (!msg || msg.uid !== uid) return;
+      if (!msg) return;
+      if (msg.uid !== uid && !isTobiAccount()) return;
       try {
         await fbDelete(`messages/${msgId}`);
         await syncAllData();
@@ -755,16 +1064,38 @@
       }
     };
 
+    window.deleteDmMessageItem = async (threadKey, msgId) => {
+      const msg = latestDms?.[threadKey]?.[msgId];
+      if (!msg) return;
+      if (msg.uid !== uid && !isTobiAccount()) return;
+      try {
+        await fbDelete(`direct_messages/${threadKey}/${msgId}`);
+        await syncAllData();
+      } catch (err) {
+        alert("DM စာဖျက်မရပါ: " + err.message);
+      }
+    };
+
     document.getElementById("btn-send-chat").addEventListener("click", sendChatMessage);
     chatInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") sendChatMessage();
     });
 
-    function renderChat(rawMsgs) {
+    function renderCurrentChatView() {
+      if (chatMode === "dm") {
+        renderDmChat();
+      } else {
+        renderLoungeChat(latestMessages);
+      }
+    }
+
+    function renderLoungeChat(rawMsgs) {
       const container = document.getElementById("chat-list");
+      const canModAll = isTobiAccount();
+
       const list = Object.entries(rawMsgs || {})
         .map(([id, m]) => ({ id, ...m }))
-        .filter(m => m && typeof m.text === "string" && m.text.trim().length > 0)
+        .filter(m => m && ((typeof m.text === "string" && m.text.trim().length > 0) || m.media))
         .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
 
       document.getElementById("chat-count-badge").textContent = `${list.length} msgs`;
@@ -774,10 +1105,11 @@
       if (!list.length) {
         container.innerHTML = `<div class="text-center text-xs text-gray-500 py-8">စာမရှိသေးပါ။ သူငယ်ချင်းတွေနဲ့ စကားစပြောကြည့်ပါ။</div>`;
         return;
-    }
+      }
 
-    container.innerHTML = list.map(m => {
+      container.innerHTML = list.map(m => {
         const isMine = m.uid === uid;
+        const canDelete = isMine || canModAll;
         return `
           <div class="rounded-2xl px-3.5 py-2.5 border ${isMine ? "bg-[#FF6B2B]/15 border-[#FF6B2B]/40 ml-7" : "bg-[#1E212D] border-[#282C3C] mr-7"}">
             <div class="flex items-center justify-between gap-2 text-[11px] mb-1">
@@ -787,15 +1119,69 @@
               </div>
               <div class="flex items-center gap-2 shrink-0">
                 <span class="text-[10px] text-gray-500">${fmtTime(m.createdAt)}</span>
-                ${isMine ? `
-                  <button onclick="window.deleteOwnChatMessage('${m.id}')"
+                ${canDelete ? `
+                  <button onclick="window.deleteChatMessageItem('${m.id}')"
+                    class="text-[10px] font-bold text-red-400 hover:underline">
+                    ${!isMine && canModAll ? "Tobi ဖျက်မည်" : "ဖျက်မည်"}
+                  </button>
+                ` : ""}
+              </div>
+            </div>
+            ${m.text ? `<div class="text-sm text-gray-100 whitespace-pre-wrap break-words">${esc(m.text)}</div>` : ""}
+            ${renderMediaNode(m.media, true)}
+          </div>
+        `;
+      }).join("");
+
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function renderDmChat() {
+      const container = document.getElementById("chat-list");
+      const canModAll = isTobiAccount();
+
+      if (!selectedDmHandle || !profile.handle) {
+        document.getElementById("chat-count-badge").textContent = `0 DMs`;
+        container.innerHTML = `<div class="text-center text-xs text-gray-500 py-8">အပေါ်က Friends Directory သို့မဟုတ် Dropdown မှ စကားပြောလိုသော သူငယ်ချင်းကို ရွေးပါ။</div>`;
+        return;
+      }
+
+      const threadKey = getDmThreadKey(profile.handle, selectedDmHandle);
+      const rawThread = latestDms?.[threadKey] || {};
+      const list = Object.entries(rawThread)
+        .map(([id, m]) => ({ id, ...m }))
+        .filter(m => m && ((typeof m.text === "string" && m.text.trim().length > 0) || m.media))
+        .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+
+      document.getElementById("chat-count-badge").textContent = `${list.length} DMs`;
+
+      if (!list.length) {
+        container.innerHTML = `<div class="text-center text-xs text-gray-500 py-8">@${esc(selectedDmHandle)} နဲ့ 1-on-1 စာမရှိသေးပါ။ စာတစ်စောင် ပို့ကြည့်ပါ။</div>`;
+        return;
+      }
+
+      container.innerHTML = list.map(m => {
+        const isMine = m.uid === uid || String(m.handle || "").toLowerCase() === String(profile.handle || "").toLowerCase();
+        const canDelete = isMine || canModAll;
+        return `
+          <div class="rounded-2xl px-3.5 py-2.5 border ${isMine ? "bg-[#FF6B2B]/15 border-[#FF6B2B]/40 ml-7" : "bg-[#1E212D] border-[#282C3C] mr-7"}">
+            <div class="flex items-center justify-between gap-2 text-[11px] mb-1">
+              <div class="truncate">
+                <span class="font-bold ${isMine ? "text-[#FF944D]" : "text-gray-200"}">${esc(m.name || "Friend")}</span>
+                <span class="text-gray-400 ml-1">@${esc(m.handle || "member")}</span>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="text-[10px] text-gray-500">${fmtTime(m.createdAt)}</span>
+                ${canDelete ? `
+                  <button onclick="window.deleteDmMessageItem('${threadKey}', '${m.id}')"
                     class="text-[10px] font-bold text-red-400 hover:underline">
                     ဖျက်မည်
                   </button>
                 ` : ""}
               </div>
             </div>
-            <div class="text-sm text-gray-100 whitespace-pre-wrap break-words">${esc(m.text)}</div>
+            ${m.text ? `<div class="text-sm text-gray-100 whitespace-pre-wrap break-words">${esc(m.text)}</div>` : ""}
+            ${renderMediaNode(m.media, true)}
           </div>
         `;
       }).join("");
@@ -811,19 +1197,31 @@
 
       document.getElementById("friends-count").textContent = `${users.length} members`;
 
+      // Populate DM partner dropdown (exclude own handle)
+      const others = users.filter(u => String(u.handle).toLowerCase() !== String(profile.handle || "").toLowerCase());
+      const prevSelected = selectedDmHandle;
+      dmPartnerSelect.innerHTML = `<option value="">-- Friend ရွေးပါ --</option>` + others.map(u => `
+        <option value="${esc(u.handle)}" ${u.handle === prevSelected ? "selected" : ""}>${esc(u.name || u.handle)} (@${esc(u.handle)})</option>
+      `).join("");
+
       if (!users.length) {
         strip.innerHTML = `<span class="text-xs text-gray-500">No members yet</span>`;
         return;
       }
 
-      strip.innerHTML = users.map(u => `
-        <div class="shrink-0 bg-[#1E212D] border border-[#282C3C] rounded-xl px-3 py-1.5 text-xs">
-          <div class="font-semibold text-white">@${esc(u.handle)}</div>
-          <div class="text-[10px] text-[#FF944D]">${esc(u.mood || "Chill")}</div>
-        </div>
-      `).join("");
+      strip.innerHTML = users.map(u => {
+        const isSelf = String(u.handle).toLowerCase() === String(profile.handle || "").toLowerCase();
+        return `
+          <button type="button" ${!isSelf ? `onclick="window.startDmWith('${esc(u.handle)}')"` : ""}
+            class="shrink-0 text-left bg-[#1E212D] border ${!isSelf ? "border-[#282C3C] hover:border-[#FF6B2B] cursor-pointer" : "border-[#FF6B2B]/40 cursor-default"} rounded-xl px-3 py-1.5 text-xs transition">
+            <div class="font-semibold text-white">@${esc(u.handle)} ${isSelf ? `<span class="text-[10px] text-[#FF944D]">(You)</span>` : `<span class="text-[10px] text-emerald-400">• DM</span>`}</div>
+            <div class="text-[10px] text-[#FF944D]">${esc(u.mood || "Chill")}</div>
+          </button>
+        `;
+      }).join("");
     }
 
+    // Voice Room Presence
     async function pushVoicePresence() {
       if (!profile.name || !profile.handle) return;
       if (voiceState.inRoom) {
@@ -897,21 +1295,23 @@
 
     async function syncAllData() {
       try {
-        const [posts, messages, users, voice] = await Promise.all([
+        const [posts, messages, dms, users, voice] = await Promise.all([
           fbGet("posts"),
           fbGet("messages"),
+          fbGet("direct_messages"),
           fbGet("users"),
           fbGet("voice_room")
         ]);
 
         latestPosts = posts || {};
         latestMessages = messages || {};
+        latestDms = dms || {};
         latestUsers = users || {};
         latestVoice = voice || {};
 
         renderFeed(latestPosts);
-        renderChat(latestMessages);
         renderFriendsStrip(latestUsers);
+        renderCurrentChatView();
         renderVoiceRoom(latestVoice);
 
         connText.textContent = "Live Connected";
