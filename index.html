@@ -1,343 +1,102 @@
 <!DOCTYPE html>
-<html lang="my">
+<html lang="my" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Memo - Live Social & Chat</title>
+  <title>Memo — Safe Space & Friends Voice Hangout</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Myanmar:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'Noto Sans Myanmar', 'sans-serif'],
+          },
+          colors: {
+            memo: {
+              bg: '#0D0E12',
+              card: '#161821',
+              card2: '#1E212D',
+              border: '#282C3C',
+              accent: '#FF6B2B',
+              accent2: '#FF944D',
+            }
+          }
+        }
+      }
+    };
+  </script>
   <style>
-    :root {
-      --bg: #0b0c10;
-      --card: #15171e;
-      --card-2: #1d202a;
-      --text: #f3f4f6;
-      --muted: #9ca3af;
-      --accent: #ff6b2b;
-      --accent-2: #ff944d;
-      --border: #272b38;
-      --ok: #22c55e;
-      --warn: #f59e0b;
+    body {
+      background-color: #0D0E12;
+      color: #F3F4F6;
+      font-family: 'Inter', 'Noto Sans Myanmar', sans-serif;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-    body { background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 84px; }
-    header {
-      position: sticky; top: 0; z-index: 20;
-      background: rgba(11,12,16,0.9); backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      padding: 14px 16px; display: flex; align-items: center; justify-content: space-between;
-    }
-    .brand { font-size: 20px; font-weight: 800; background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .status-pill { font-size: 12px; padding: 4px 10px; border-radius: 999px; background: var(--card-2); border: 1px solid var(--border); color: var(--warn); }
-    .container { max-width: 640px; margin: 0 auto; padding: 14px; display: flex; flex-direction: column; gap: 14px; }
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 14px; }
-    textarea, input {
-      width: 100%; background: var(--card-2); color: var(--text);
-      border: 1px solid var(--border); border-radius: 12px; padding: 11px 12px;
-      font-size: 14px; outline: none;
-    }
-    textarea:focus, input:focus { border-color: var(--accent); }
-    textarea { resize: vertical; min-height: 76px; }
-    .row { display: flex; gap: 8px; align-items: center; margin-top: 10px; }
-    button {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color: #fff; border: none; border-radius: 12px; padding: 10px 16px;
-      font-weight: 700; font-size: 14px; cursor: pointer;
-    }
-    button.secondary { background: var(--card-2); color: var(--text); border: 1px solid var(--border); }
-    button.small { padding: 6px 12px; font-size: 12px; border-radius: 9px; }
-    .post { display: flex; flex-direction: column; gap: 8px; }
-    .post-head { display: flex; justify-content: space-between; align-items: center; }
-    .author { font-weight: 700; font-size: 14px; }
-    .handle { color: var(--accent-2); font-size: 12px; }
-    .time { color: var(--muted); font-size: 11px; }
-    .post-body { font-size: 15px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
-    .post-actions { display: flex; gap: 10px; margin-top: 4px; }
-    .chat-box { display: flex; flex-direction: column; gap: 8px; max-height: 55vh; overflow-y: auto; padding: 4px 0; }
-    .msg { background: var(--card-2); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; }
-    .msg.mine { background: rgba(255, 107, 43, 0.16); border-color: rgba(255, 107, 43, 0.45); margin-left: 24px; }
-    .nav {
-      position: fixed; bottom: 0; left: 0; right: 0; z-index: 20;
-      background: rgba(15,17,23,0.95); backdrop-filter: blur(12px);
-      border-top: 1px solid var(--border);
-      display: grid; grid-template-columns: repeat(3, 1fr); padding: 8px 6px;
-    }
-    .nav button { background: transparent; color: var(--muted); border-radius: 10px; padding: 8px; font-size: 13px; }
-    .nav button.active { background: var(--card-2); color: var(--accent-2); }
-    .hidden { display: none; }
-    .label { font-size: 12px; color: var(--muted); margin-bottom: 6px; display: block; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #161821; }
+    ::-webkit-scrollbar-thumb { background: #2D3246; border-radius: 999px; }
   </style>
 </head>
-<body>
-  <header>
-    <div class="brand">Memo</div>
-    <div id="conn-status" class="status-pill">Connecting...</div>
-  </header>
+<body class="min-h-screen pb-24 bg-[#0D0E12] text-gray-100">
 
-  <main class="container">
-    <section id="tab-feed">
-      <div class="card">
-        <label class="label">အခု ဘာတွေးနေလဲ / Post တင်မယ်</label>
-        <textarea id="post-input" placeholder="သူငယ်ချင်းတွေ မြင်ရအောင် Post တစ်ခု ရေးလိုက်ပါ..."></textarea>
-        <div class="row" style="justify-content: space-between;">
-          <span id="posting-as" class="handle"></span>
-          <button id="btn-post">Post တင်မည်</button>
-        </div>
-      </div>
-      <div id="feed-list" style="display:flex; flex-direction:column; gap:12px; margin-top:12px;"></div>
-    </section>
-
-    <section id="tab-chat" class="hidden">
-      <div class="card">
-        <div style="font-weight:700; margin-bottom:8px;">Global Lounge Chat (အားလုံး စကားပြောခန်း)</div>
-        <div id="chat-list" class="chat-box"></div>
-        <div class="row">
-          <input id="chat-input" type="text" placeholder="စာတစ်စောင် ရိုက်ထည့်ပါ..." />
-          <button id="btn-send-chat">ပို့မည်</button>
-        </div>
-      </div>
-    </section>
-
-    <section id="tab-profile" class="hidden">
-      <div class="card" style="display:flex; flex-direction:column; gap:10px;">
-        <div style="font-weight:700; font-size:16px;">Profile Settings</div>
-        <div>
-          <label class="label">Display Name</label>
-          <input id="prof-name" type="text" placeholder="နာမည်" />
-        </div>
-        <div>
-          <label class="label">@Username</label>
-          <input id="prof-handle" type="text" placeholder="username" />
-        </div>
-        <div>
-          <label class="label">Bio</label>
-          <textarea id="prof-bio" placeholder="ကိုယ့်အကြောင်း အကျဉ်းချုပ်..."></textarea>
-        </div>
-        <button id="btn-save-profile">Profile သိမ်းမည်</button>
-      </div>
-    </section>
-  </main>
-
-  <nav class="nav">
-    <button id="nav-feed" class="active">Feed</button>
-    <button id="nav-chat">Chat</button>
-    <button id="nav-profile">Profile</button>
-  </nav>
-
-  <script>
-    const DB_BASE = "https://memo-app-1c08a-default-rtdb.asia-southeast1.firebasedatabase.app";
-
-    let uid = localStorage.getItem("memo_uid");
-    if (!uid) {
-      uid = "u_" + Math.random().toString(36).slice(2, 9);
-      localStorage.setItem("memo_uid", uid);
-    }
-
-    let profile = JSON.parse(localStorage.getItem("memo_profile") || "null") || {
-      name: "Gogogo",
-      handle: "gogogo1027",
-      bio: "Memo member"
-    };
-
-    const statusEl = document.getElementById("conn-status");
-    const postingAsEl = document.getElementById("posting-as");
-    const profNameEl = document.getElementById("prof-name");
-    const profHandleEl = document.getElementById("prof-handle");
-    const profBioEl = document.getElementById("prof-bio");
-
-    async function dbGet(path) {
-      const res = await fetch(`${DB_BASE}/${path}.json`, { cache: "no-store" });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      return await res.json();
-    }
-
-    async function dbPost(path, data) {
-      const res = await fetch(`${DB_BASE}/${path}.json`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      return await res.json();
-    }
-
-    async function dbPut(path, data) {
-      const res = await fetch(`${DB_BASE}/${path}.json`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      return await res.json();
-    }
-
-    async function dbPatch(path, data) {
-      const res = await fetch(`${DB_BASE}/${path}.json`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      return await res.json();
-    }
-
-    function syncProfileUI() {
-      postingAsEl.textContent = `${profile.name} (@${profile.handle})`;
-      profNameEl.value = profile.name;
-      profHandleEl.value = profile.handle;
-      profBioEl.value = profile.bio;
-      localStorage.setItem("memo_profile", JSON.stringify(profile));
-      dbPut(`users/${uid}`, { ...profile, updatedAt: Date.now() }).catch(() => {});
-    }
-    syncProfileUI();
-
-    const tabs = {
-      feed: { el: document.getElementById("tab-feed"), btn: document.getElementById("nav-feed") },
-      chat: { el: document.getElementById("tab-chat"), btn: document.getElementById("nav-chat") },
-      profile: { el: document.getElementById("tab-profile"), btn: document.getElementById("nav-profile") }
-    };
-    function switchTab(name) {
-      Object.entries(tabs).forEach(([k, v]) => {
-        v.el.classList.toggle("hidden", k !== name);
-        v.btn.classList.toggle("active", k === name);
-      });
-    }
-    tabs.feed.btn.onclick = () => switchTab("feed");
-    tabs.chat.btn.onclick = () => switchTab("chat");
-    tabs.profile.btn.onclick = () => switchTab("profile");
-
-    document.getElementById("btn-save-profile").onclick = () => {
-      profile = {
-        name: (profNameEl.value.trim() || "Memo User"),
-        handle: (profHandleEl.value.trim().replace(/^@+/, "") || "user"),
-        bio: profBioEl.value.trim()
-      };
-      syncProfileUI();
-      alert("Profile သိမ်းပြီးပါပြီ!");
-    };
-
-    const feedList = document.getElementById("feed-list");
-    const chatList = document.getElementById("chat-list");
-
-    function renderPosts(val) {
-      const data = val || {};
-      const items = Object.entries(data)
-        .map(([id, p]) => ({ id, ...p }))
-        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-
-      feedList.innerHTML = items.map(p => `
-        <div class="card post">
-          <div class="post-head">
-            <div>
-              <span class="author">${escapeHtml(p.name || "User")}</span>
-              <span class="handle">@${escapeHtml(p.handle || "member")}</span>
-            </div>
-            <span class="time">${formatTime(p.createdAt)}</span>
+  <!-- ENTRY GATE MODAL (USERNAME & FRIEND PASSCODE) -->
+  <div id="gate-modal" class="fixed inset-0 z-50 bg-[#0D0E12]/95 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-[#161821] border border-[#282C3C] rounded-3xl p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-[#282C3C] pb-3.5">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#FF6B2B] to-[#FF944D] flex items-center justify-center font-extrabold text-white text-lg shadow-lg shadow-[#FF6B2B]/20">
+            M
           </div>
-          <div class="post-body">${escapeHtml(p.text || "")}</div>
-          <div class="post-actions">
-            <button class="secondary small" onclick="window.likePost('${p.id}', ${p.likes || 0})">♥ ${p.likes || 0}</button>
+          <div>
+            <h1 class="text-xl font-extrabold bg-gradient-to-r from-[#FF6B2B] to-[#FF944D] bg-clip-text text-transparent">
+              Memo Hangout
+            </h1>
+            <p class="text-[11px] text-gray-400">Private Friends Space • Feed, Chat & Voice</p>
           </div>
         </div>
-      `).join("") || `<div class="card" style="color:var(--muted); text-align:center;">Post များ မရှိသေးပါ။ ပထမဆုံး Post တစ်ခု တင်လိုက်ပါ!</div>`;
-    }
+        <span class="text-[11px] px-2.5 py-1 rounded-full bg-[#FF6B2B]/15 border border-[#FF6B2B]/30 text-[#FF944D] font-semibold">
+          Friends Only
+        </span>
+      </div>
 
-    function renderMessages(val) {
-      const data = val || {};
-      const msgs = Object.entries(data)
-        .map(([id, m]) => ({ id, ...m }))
-        .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
-
-      chatList.innerHTML = msgs.map(m => `
-        <div class="msg ${m.uid === uid ? "mine" : ""}">
-          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
-            <span class="handle">@${escapeHtml(m.handle || m.name || "user")}</span>
-            <span class="time">${formatTime(m.createdAt)}</span>
-          </div>
-          <div style="font-size:14px; word-break:break-word;">${escapeHtml(m.text || "")}</div>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-medium text-gray-300 mb-1">Display Name (ပြသမည့် နာမည်)</label>
+          <input id="gate-name" type="text" placeholder="ဥပမာ - Gogogo"
+            class="w-full bg-[#1E212D] border border-[#282C3C] focus:border-[#FF6B2B] rounded-xl px-3.5 py-2.5 text-sm text-white outline-none transition" />
         </div>
-      `).join("") || `<div style="color:var(--muted); font-size:13px; text-align:center; padding:16px;">စကားစမြောက် ပြောကြည့်ပါ!</div>`;
-      chatList.scrollTop = chatList.scrollHeight;
-    }
 
-    async function refreshAll() {
-      try {
-        const [posts, messages] = await Promise.all([dbGet("posts"), dbGet("messages")]);
-        renderPosts(posts);
-        renderMessages(messages);
-        statusEl.textContent = "Live Connected";
-        statusEl.style.color = "#22c55e";
-      } catch (err) {
-        statusEl.textContent = "Retry Needed";
-        statusEl.style.color = "#f59e0b";
-      }
-    }
+        <div>
+          <label class="block text-xs font-medium text-gray-300 mb-1">Username (@username)</label>
+          <input id="gate-handle" type="text" placeholder="ဥပမာ - gogogo1027"
+            class="w-full bg-[#1E212D] border border-[#282C3C] focus:border-[#FF6B2B] rounded-xl px-3.5 py-2.5 text-sm text-white outline-none transition" />
+        </div>
 
-    document.getElementById("btn-post").onclick = async () => {
-      const input = document.getElementById("post-input");
-      const text = input.value.trim();
-      if (!text) return;
-      try {
-        await dbPost("posts", {
-          uid,
-          name: profile.name,
-          handle: profile.handle,
-          text,
-          likes: 0,
-          createdAt: Date.now()
-        });
-        input.value = "";
-        await refreshAll();
-      } catch (err) {
-        alert("Post တင်မရပါ: " + err.message);
-      }
-    };
+        <div>
+          <label class="block text-xs font-medium text-gray-300 mb-1">Friend Passcode (သူငယ်ချင်း စကားဝှက်)</label>
+          <input id="gate-passcode" type="password" placeholder="Default: memo1027"
+            class="w-full bg-[#1E212D] border border-[#282C3C] focus:border-[#FF6B2B] rounded-xl px-3.5 py-2.5 text-sm text-white outline-none transition" />
+          <p class="text-[11px] text-gray-500 mt-1">Code ထဲက <code class="text-[#FF944D]">FRIEND_PASSCODE</code> ကို ကိုယ်ကြိုက်တဲ့ စကားဝှက် ပြောင်းနိုင်ပါသည်။</p>
+        </div>
+      </div>
 
-    window.likePost = async (id, currentLikes) => {
-      try {
-        await dbPatch(`posts/${id}`, { likes: (currentLikes || 0) + 1 });
-        await refreshAll();
-      } catch (err) {}
-    };
+      <div id="gate-error" class="hidden text-xs bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl px-3 py-2"></div>
 
-    async function sendChat() {
-      const input = document.getElementById("chat-input");
-      const text = input.value.trim();
-      if (!text) return;
-      try {
-        await dbPost("messages", {
-          uid,
-          name: profile.name,
-          handle: profile.handle,
-          text,
-          createdAt: Date.now()
-        });
-        input.value = "";
-        await refreshAll();
-      } catch (err) {
-        alert("စာပို့မရပါ: " + err.message);
-      }
-    }
-    document.getElementById("btn-send-chat").onclick = sendChat;
-    document.getElementById("chat-input").addEventListener("keydown", (e) => {
-      if (e.key === "Enter") sendChat();
-    });
+      <button id="btn-gate-enter"
+        class="w-full py-3 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-[#FF6B2B] to-[#FF944D] hover:opacity-95 active:scale-[0.99] transition shadow-lg shadow-[#FF6B2B]/25">
+        အတည်ပြုပြီး Memo ထဲ ဝင်မည်
+      </button>
+    </div>
+  </div>
 
-    function escapeHtml(str) {
-      return String(str)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;");
-    }
-
-    function formatTime(ts) {
-      if (!ts) return "";
-      const d = new Date(ts);
-      return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-    }
-
-    refreshAll();
-    setInterval(refreshAll, 4000);
-  </script>
-</body>
-  </html>
-  
+  <!-- STICKY TOP BAR -->
+  <header class="sticky top-0 z-30 bg-[#0D0E12]/90 backdrop-blur-md border-b border-[#282C3C]">
+    <div class="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#FF6B2B
+          
