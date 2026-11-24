@@ -98,5 +98,317 @@
   <header class="sticky top-0 z-30 bg-[#0D0E12]/90 backdrop-blur-md border-b border-[#282C3C]">
     <div class="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
       <div class="flex items-center gap-2.5 min-w-0">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#FF6B2B
-          
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#FF6B2B] to-[#FF944D] flex items-center justify-center font-extrabold text-white text-base shrink-0">
+          M
+        </div>
+        <div class="truncate">
+          <div class="flex items-center gap-2">
+            <span class="font-extrabold text-base tracking-tight text-white">Memo</span>
+            <span id="top-mood-pill" class="text-[11px] px-2 py-0.5 rounded-full bg-[#1E212D] border border-[#282C3C] text-gray-300">Chill</span>
+          </div>
+          <div id="top-identity" class="text-xs text-[#FF944D] font-medium truncate"></div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 shrink-0">
+        <button id="btn-manual-sync" title="Refresh Now"
+          class="p-2 rounded-xl bg-[#161821] border border-[#282C3C] hover:border-[#FF6B2B] text-gray-300 transition">
+          <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+        </button>
+        <div id="conn-badge" class="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 font-semibold">
+          <span id="conn-dot" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+          <span id="conn-text">Connecting...</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-2xl mx-auto px-4 pt-4 space-y-4">
+
+    <!-- ==================== TAB 1: FEED ==================== -->
+    <section id="tab-feed" class="space-y-4">
+      <!-- Create Post Card -->
+      <div class="bg-[#161821] border border-[#282C3C] rounded-2xl p-4 space-y-3 shadow-sm">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i data-lucide="sparkles" class="w-4 h-4 text-[#FF6B2B]"></i>
+            <span class="text-xs font-bold text-gray-200">Post အသစ် တင်မယ်</span>
+          </div>
+          <span id="feed-composer-user" class="text-xs text-[#FF944D] font-medium"></span>
+        </div>
+
+        <textarea id="post-input" rows="3" placeholder="သူငယ်ချင်းတွေနဲ့ မျှဝေချင်တဲ့ အကြောင်းအရာ ရေးလိုက်ပါ..."
+          class="w-full bg-[#1E212D] border border-[#282C3C] focus:border-[#FF6B2B] rounded-xl p-3 text-sm text-white placeholder-gray-500 outline-none resize-none transition"></textarea>
+
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+          <div class="flex items-center gap-2">
+            <select id="post-tag" class="bg-[#1E212D] border border-[#282C3C] rounded-xl px-2.5 py-1.5 text-xs text-gray-300 outline-none">
+              <option value="General">💬 General</option>
+              <option value="Hangout">🎧 Hangout</option>
+              <option value="Night Owl">🌙 Night Owl</option>
+              <option value="Random">⚡ Random</option>
+            </select>
+            <span id="post-char-count" class="text-[11px] text-gray-500">0 / 500</span>
+          </div>
+
+          <button id="btn-publish-post"
+            class="px-4 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-[#FF6B2B] to-[#FF944D] hover:opacity-95 transition flex items-center gap-1.5">
+            <i data-lucide="send" class="w-3.5 h-3.5"></i>
+            <span>Post တင်မည်</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Search & Filter Bar -->
+      <div class="flex items-center gap-2">
+        <div class="relative flex-1">
+          <i data-lucide="search" class="w-4 h-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2"></i>
+          <input id="feed-search" type="text" placeholder="Post များထဲမှ ရှာဖွေရန်..."
+            class="w-full bg-[#161821] border border-[#282C3C] focus:border-[#FF6B2B] rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-gray-500 outline-none" />
+        </div>
+        <span id="post-count-badge" class="text-xs px-3 py-2 rounded-xl bg-[#161821] border border-[#282C3C] text-gray-400">
+          0 Posts
+        </span>
+      </div>
+
+      <!-- Posts Feed List -->
+      <div id="feed-list" class="space-y-3"></div>
+    </section>
+
+    <!-- ==================== TAB 2: CHAT ==================== -->
+    <section id="tab-chat" class="hidden space-y-3">
+      <!-- Active Friends Strip -->
+      <div class="bg-[#161821] border border-[#282C3C] rounded-2xl p-3 space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-gray-300 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span>Friends Directory</span>
+          </span>
+          <span id="friends-count" class="text-[11px] text-gray-400">0 members</span>
+        </div>
+        <div id="friends-strip" class="flex gap-2 overflow-x-auto pb-1"></div>
+      </div>
+
+      <!-- Chat Box -->
+      <div class="bg-[#161821] border border-[#282C3C] rounded-2xl p-4 space-y-3">
+        <div class="flex items-center justify-between border-b border-[#282C3C] pb-2.5">
+          <div>
+            <h2 class="text-sm font-bold text-white flex items-center gap-2">
+              <i data-lucide="message-circle" class="w-4 h-4 text-[#FF6B2B]"></i>
+              <span>Friends Lounge Chat</span>
+            </h2>
+            <p class="text-[11px] text-gray-400">ကိုယ်ပို့ထားသော စာများကို ကိုယ်တိုင် ဖျက်နိုင်ပါသည်။</p>
+          </div>
+          <span id="chat-count-badge" class="text-[11px] px-2.5 py-1 rounded-full bg-[#1E212D] border border-[#282C3C] text-gray-300">
+            0 msgs
+          </span>
+        </div>
+
+        <div id="chat-list" class="space-y-2.5 max-h-[52vh] overflow-y-auto pr-1"></div>
+
+        <div class="flex items-center gap-2 pt-1 border-t border-[#282C3C]">
+          <input id="chat-input" type="text" placeholder="စာတစ်စောင် ရိုက်ထည့်ပါ..."
+            class="flex-1 bg-[#1E212D] border border-[#282C3C] focus:border-[#FF6B2B] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 outline-none" />
+          <button id="btn-send-chat"
+            class="px-4 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-[#FF6B2B] to-[#FF944D] hover:opacity-95 transition flex items-center gap-1.5">
+            <span>ပို့မည်</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: VOICE ==================== -->
+    <section id="tab-voice" class="hidden space-y-4">
+      <div class="bg-[#161821] border border-[#282C3C] rounded-2xl p-5 space-y-4">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <span class="text-[11px] px-2.5 py-0.5 rounded-full bg-[#FF6B2B]/15 border border-[#FF6B2B]/30 text-[#FF944D] font-semibold">
+              Voice Hangout Lobby
+            </span>
+            <h2 class="text-lg font-extrabold text-white mt-2">Late Night Friends Room</h2>
+            <p class="text-xs text-gray-400 mt-1">
+              သူငယ်ချင်းတွေ Voice Room ထဲ ရှိမရှိ Live ကြည့်နိုင်ပြီး ZegoCloud / Agora SDK ကိုလည်း အလွယ်တကူ ထပ်ချိတ်နိုင်ပါသည်။
+            </p>
+          </div>
+          <div class="w-11 h-11 rounded-2xl bg-[#1E212D] border border-[#282C3C] flex items-center justify-center text-[#FF6B2B] shrink-0">
+            <i data-lucide="mic" class="w-5 h-5"></i>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-2 pt-1">
+          <button id="btn-toggle-voice-room"
+            class="px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-[#FF6B2B] to-[#FF944D] hover:opacity-95 transition">
+            Room ထဲ ဝင်မည်
+          </button>
+          <button id="btn-toggle-mute"
+            class="px-4 py-2.5 rounded-xl text-xs font-bold bg-[#1E212D] border border-[#282C3C] text-gray-200 hover:border-[#FF6B2B] transition">
+            Mic: Unmuted
+          </button>
+          <button id="btn-toggle-hand"
+            class="px-4 py-2.5 rounded-xl text-xs font-bold bg-[#1E212D] border border-[#282C3C] text-gray-200 hover:border-[#FF6B2B] transition">
+            ✋ Raise Hand
+          </button>
+        </div>
+
+        <div class="border-t border-[#282C3C] pt-3 space-y-2">
+          <div class="text-xs font-bold text-gray-300">Room ထဲ ရှိနေသူများ</div>
+          <div id="voice-participants" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5"></div>
+        </div>
+
+        <div class="bg-[#1E212D] border border-[#282C3C] rounded-xl p-3.5 text-xs text-gray-400 space-y-1">
+          <div class="font-semibold text-gray-200">Real-time Audio SDK Integration Note</div>
+          <p>Real-time အသံပြောဖို့အတွက် <strong class="text-[#FF944D]">ZegoCloud Express SDK</strong> သို့မဟုတ် <strong class="text-[#FF944D]">Agora RTC SDK</strong> ရဲ့ App ID ကို ဒီ Room ထဲ ချိတ်ဆက်ပေးလို့ ရပါတယ်။</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 4: PROFILE ==================== -->
+    <section id="tab-profile" class="hidden space-y-4">
+      <div class="bg-[#161821] border border-[#282C3C] rounded-2xl p-5 space-y-4">
+        <div class="flex items-center justify-between border-b border-[#282C3C] pb-3">
+          <div>
+            <h2 class="text-base font-extrabold text-white">Profile & Account</h2>
+            <p id="prof-uid-text" class="text-[11px] text-gray-500"></p>
+          </div>
+          <button id="btn-reopen-gate"
+            class="text-xs px-3 py-1.5 rounded-xl bg-[#1E212D] border border-[#282C3C] text-[#FF944D] font-semibold hover:border-[#FF6B2B] transition">
+            Username / Passcode ပြောင်းမည်
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="bg-[#1E212D] border border-[#282C3C] rounded-xl p-3">
+            <div class="text-[11px] text-gray-400">My Posts</div>
+            <div id="stat-my-posts" class="text-lg font-extrabold text-white mt-0.5">0</div>
+          </div>
+          <div class="bg-[#1E212D] border border-[#282C3C] rounded-xl p-3">
+            <div class="text-[11px] text-gray-400">My Chat Msgs</div>
+            <div id="stat-my-msgs" class="text-lg font-extrabold text-[#FF944D] mt-0.5">0</div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">Display Name</label>
+          <input id="prof-name" type="text"
+            class="w-full bg-[#1E212D] border border-[#282C3C] focus:border-[#FF6B2B] rounded-xl px-3.5 py-2.5 text-sm text-white outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">@Username</label>
+          <input id="prof-handle" type="text"
+            class="w-full bg-[#1E212D] border border-[#282C3C] focus:border-[#FF6B2B] rounded-xl px-3.5 py-2.5 text-sm text-white outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">Current Mood / Status</label>
+          <select id="prof-mood"
+            class="w-full bg-[#1E212D] border border-[#282C3C] focus:border-[#FF6B2B] rounded-xl px-3.5 py-2.5 text-sm text-white outline-none">
+            <option value="Chill">😎 Chill</option>
+            <option value="Gaming">🎮 Gaming</option>
+            <option value="Music">🎧 Listening Music</option>
+            <option value="Working">💻 Working / Building</option>
+            <option value="Sleepy">😴 Sleepy</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">Bio</label>
+          <textarea id="prof-bio" rows="2" placeholder="ကိုယ့်အကြောင်း အကျဉ်းချုပ်..."
+            class="w-full bg-[#1E212D] border border-[#282C3C] focus:border-[#FF6B2B] rounded-xl p-3 text-sm text-white outline-none resize-none"></textarea>
+        </div>
+
+        <button id="btn-save-profile"
+          class="w-full py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-[#FF6B2B] to-[#FF944D] hover:opacity-95 transition">
+          Profile ပြောင်းလဲမှုများ သိမ်းမည်
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BOTTOM NAVIGATION BAR -->
+  <nav class="fixed bottom-0 inset-x-0 z-30 bg-[#161821]/95 backdrop-blur-md border-t border-[#282C3C] py-2">
+    <div class="max-w-2xl mx-auto grid grid-cols-4 gap-1 px-2">
+      <button data-nav="feed" class="nav-item flex flex-col items-center gap-1 py-1.5 rounded-xl text-[11px] font-bold text-[#FF944D] bg-[#1E212D]">
+        <i data-lucide="flame" class="w-4 h-4"></i>
+        <span>Feed</span>
+      </button>
+      <button data-nav="chat" class="nav-item flex flex-col items-center gap-1 py-1.5 rounded-xl text-[11px] font-semibold text-gray-400">
+        <i data-lucide="message-square" class="w-4 h-4"></i>
+        <span>Chat</span>
+      </button>
+      <button data-nav="voice" class="nav-item flex flex-col items-center gap-1 py-1.5 rounded-xl text-[11px] font-semibold text-gray-400">
+        <i data-lucide="mic" class="w-4 h-4"></i>
+        <span>Voice</span>
+      </button>
+      <button data-nav="profile" class="nav-item flex flex-col items-center gap-1 py-1.5 rounded-xl text-[11px] font-semibold text-gray-400">
+        <i data-lucide="user" class="w-4 h-4"></i>
+        <span>Profile</span>
+      </button>
+    </div>
+  </nav>
+
+  <script>
+    // =========================================================================
+    // CONFIGURATION
+    // =========================================================================
+    const DB_URL = "https://memo-app-1c08a-default-rtdb.asia-southeast1.firebasedatabase.app";
+    const FRIEND_PASSCODE = "memo1027"; // သူငယ်ချင်းများသာ ဝင်ရန် စကားဝှက်
+
+    let uid = localStorage.getItem("memo_uid_v2");
+    if (!uid) {
+      uid = "u_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 7);
+      localStorage.setItem("memo_uid_v2", uid);
+    }
+
+    let isFriendVerified = localStorage.getItem("memo_verified_v2") === "yes";
+    let profile = JSON.parse(localStorage.getItem("memo_profile_v2") || "null") || {
+      name: "",
+      handle: "",
+      mood: "Chill",
+      bio: "Memo friend"
+    };
+
+    let voiceState = {
+      inRoom: false,
+      muted: false,
+      handRaised: false
+    };
+
+    let latestPosts = {};
+    let latestMessages = {};
+    let latestUsers = {};
+    let latestVoice = {};
+
+    // =========================================================================
+    // FIREBASE REST HELPERS
+    // =========================================================================
+    async function fbGet(path) {
+      const res = await fetch(`${DB_URL}/${path}.json`, { cache: "no-store" });
+      if (!res.ok) throw new Error(`GET ${path} failed (${res.status})`);
+      return await res.json();
+    }
+
+    async function fbPost(path, payload) {
+      const res = await fetch(`${DB_URL}/${path}.json`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error(`POST ${path} failed (${res.status})`);
+      return await res.json();
+    }
+
+    async function fbPut(path, payload) {
+      const res = await fetch(`${DB_URL}/${path}.json`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error(`PUT ${path} failed (${res.status})`);
+      return await res.json();
+    }
+
+    async function fbPatch(path, payload) {
+      const res = await fetch(`${DB_URL}/${path}.json`, 
