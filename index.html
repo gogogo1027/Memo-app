@@ -67,13 +67,13 @@
       <div class="space-y-3">
         <div>
           <label class="block text-xs font-medium text-gray-300 mb-1">Display Name (ပြသမည့် နာမည်)</label>
-          <input id="gate-name" type="text" placeholder="ဥပမာ - Tobi"
+          <input id="gate-name" type="text" placeholder="ဥပမာ - Nyi Nyi"
             class="w-full bg-[#1E212D] border border-[#282C3C] focus:border-[#FF6B2B] rounded-xl px-3.5 py-2.5 text-sm text-white outline-none transition" />
         </div>
 
         <div>
           <label class="block text-xs font-medium text-gray-300 mb-1">Username (@username)</label>
-          <input id="gate-handle" type="text" placeholder="ဥပမာ - tobi1027"
+          <input id="gate-handle" type="text" placeholder="ဥပမာ - nyinyi_01"
             class="w-full bg-[#1E212D] border border-[#282C3C] focus:border-[#FF6B2B] rounded-xl px-3.5 py-2.5 text-sm text-white outline-none transition" />
         </div>
       </div>
@@ -98,9 +98,6 @@
           <div class="flex items-center gap-2 flex-wrap">
             <span class="font-extrabold text-base tracking-tight text-white">Memo</span>
             <span id="top-mood-pill" class="text-[11px] px-2 py-0.5 rounded-full bg-[#1E212D] border border-[#282C3C] text-gray-300">Chill</span>
-            <span id="tobi-admin-badge" class="hidden text-[10px] px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-300 font-bold">
-              ★ Tobi Mod
-            </span>
           </div>
           <div id="top-identity" class="text-xs text-[#FF944D] font-medium truncate"></div>
         </div>
@@ -136,7 +133,6 @@
         <textarea id="post-input" rows="3" placeholder="သူငယ်ချင်းတွေနဲ့ မျှဝေချင်တဲ့ အကြောင်းအရာ ရေးလိုက်ပါ..."
           class="w-full bg-[#1E212D] border border-[#282C3C] focus:border-[#FF6B2B] rounded-xl p-3 text-sm text-white placeholder-gray-500 outline-none resize-none transition"></textarea>
 
-        <!-- Photo / Video attachment for Post -->
         <div id="post-media-preview" class="hidden relative bg-[#1E212D] border border-[#282C3C] rounded-xl p-2.5 space-y-2">
           <div class="flex items-center justify-between text-xs text-gray-300">
             <span id="post-media-name" class="truncate font-medium text-[#FF944D]"></span>
@@ -185,42 +181,47 @@
       <div id="feed-list" class="space-y-3"></div>
     </section>
 
-    <!-- ==================== TAB 2: CHAT (LOUNGE + PERSON TO PERSON DM) ==================== -->
+    <!-- ==================== TAB 2: CHAT (LOUNGE + PRIVATE 1-ON-1 DM) ==================== -->
     <section id="tab-chat" class="hidden space-y-3">
-      <!-- Friends Directory for Person-to-Person Chat -->
+      <!-- Friends Directory -->
       <div class="bg-[#161821] border border-[#282C3C] rounded-2xl p-3 space-y-2">
         <div class="flex items-center justify-between">
           <span class="text-xs font-bold text-gray-300 flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-            <span>Friends Directory (နှိပ်ပြီး 1-on-1 စကားပြောပါ)</span>
+            <span>Friends Directory (နှိပ်ပြီး Private DM ပြောပါ)</span>
           </span>
           <span id="friends-count" class="text-[11px] text-gray-400">0 members</span>
         </div>
         <div id="friends-strip" class="flex gap-2 overflow-x-auto pb-1"></div>
       </div>
 
-      <!-- Mode Switcher: Lounge Chat vs Person-to-Person DM -->
+      <!-- Mode Switcher: Lounge Chat vs Private DM -->
       <div class="grid grid-cols-2 gap-2 bg-[#161821] border border-[#282C3C] rounded-2xl p-1.5">
         <button id="btn-mode-lounge" type="button"
           class="py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-[#FF6B2B] to-[#FF944D] text-white transition">
-          💬 Lounge Chat (အားလုံး)
+          💬 Lounge Chat
         </button>
         <button id="btn-mode-dm" type="button"
           class="py-2 rounded-xl text-xs font-bold bg-[#1E212D] text-gray-300 hover:text-white transition">
-          🔒 Person to Person DM
+          🔒 Private DM (နှစ်ယောက်တည်း)
         </button>
       </div>
 
-      <!-- DM Target Selector (shown in DM mode) -->
-      <div id="dm-target-bar" class="hidden bg-[#161821] border border-[#282C3C] rounded-2xl p-3 flex items-center justify-between gap-2">
-        <div class="text-xs">
-          <span class="text-gray-400">Chatting with:</span>
-          <span id="dm-partner-label" class="font-bold text-[#FF944D] ml-1">သူငယ်ချင်း တစ်ယောက် ရွေးပါ</span>
+      <!-- Private DM Target Selector -->
+      <div id="dm-target-bar" class="hidden bg-[#161821] border border-[#282C3C] rounded-2xl p-3 space-y-2">
+        <div class="flex items-center justify-between gap-2">
+          <div class="text-xs">
+            <span class="text-gray-400">Private Chat With:</span>
+            <span id="dm-partner-label" class="font-bold text-[#FF944D] ml-1">သူငယ်ချင်း ရွေးပါ</span>
+          </div>
+          <select id="dm-partner-select"
+            class="bg-[#1E212D] border border-[#282C3C] focus:border-[#FF6B2B] rounded-xl px-2.5 py-1.5 text-xs text-white outline-none max-w-[55%]">
+            <option value="">-- Friend ရွေးပါ --</option>
+          </select>
         </div>
-        <select id="dm-partner-select"
-          class="bg-[#1E212D] border border-[#282C3C] focus:border-[#FF6B2B] rounded-xl px-2.5 py-1.5 text-xs text-white outline-none max-w-[55%]">
-          <option value="">-- Friend ရွေးပါ --</option>
-        </select>
+        <div class="text-[11px] text-emerald-400/90">
+          ✓ ကိုယ်နဲ့ ရွေးထားတဲ့သူ နှစ်ယောက်တည်းသာ မြင်နိုင်ပါသည်။ အခြားလူများ မမြင်နိုင်ပါ။
+        </div>
       </div>
 
       <!-- Chat Box -->
@@ -232,7 +233,7 @@
               <span>Friends Lounge Chat</span>
             </h2>
             <p id="chat-room-subtitle" class="text-[11px] text-gray-400">
-              ကိုယ်ပို့ထားသော စာများကို ဖျက်နိုင်ပြီး Tobi (@tobi1027) က အားလုံး၏ စာများကို ဖျက်နိုင်ပါသည်။
+              ကိုယ်ပို့ထားသော စာများကို ကိုယ်တိုင် ဖျက်နိုင်ပါသည်။
             </p>
           </div>
           <span id="chat-count-badge" class="text-[11px] px-2.5 py-1 rounded-full bg-[#1E212D] border border-[#282C3C] text-gray-300">
@@ -279,7 +280,7 @@
             </span>
             <h2 class="text-lg font-extrabold text-white mt-2">Late Night Friends Room</h2>
             <p class="text-xs text-gray-400 mt-1">
-              သူငယ်ချင်းတွေ Voice Room ထဲ ရှိမရှိ Live ကြည့်နိုင်ပြီး ZegoCloud / Agora SDK ကိုလည်း ထပ်ချိတ်နိုင်ပါသည်။
+              သူငယ်ချင်းတွေ Voice Room ထဲ ရှိမရှိ Live ကြည့်နိုင်ပါသည်။
             </p>
           </div>
           <div class="w-11 h-11 rounded-2xl bg-[#1E212D] border border-[#282C3C] flex items-center justify-center text-[#FF6B2B] shrink-0">
@@ -387,9 +388,12 @@
         <i data-lucide="flame" class="w-4 h-4"></i>
         <span>Feed</span>
       </button>
-
-      <button data-nav="voice" class="nav-item flex flex-col items-center gap-1 py-1.5 rounded-xl text-[11px] font-semibold text-gray-400">
-        <i data-lucide="mic" class="w-4 h-4"></i
+      <button data-nav="chat" class="nav-item flex flex-col items-center gap-1 py-1.5 rounded-xl text-[11px] font-semibold text-gray-400">
+        <i data-lucide="message-square" class="w-4 h-4"></i>
+        <span>Chat</span>
+      </button>
+  <button data-nav="voice" class="nav-item flex flex-col items-center gap-1 py-1.5 rounded-xl text-[11px] font-semibold text-gray-400">
+        <i data-lucide="mic" class="w-4 h-4"></i>
         <span>Voice</span>
       </button>
       <button data-nav="profile" class="nav-item flex flex-col items-center gap-1 py-1.5 rounded-xl text-[11px] font-semibold text-gray-400">
@@ -415,19 +419,11 @@
       bio: "Memo friend"
     };
 
-    // Tobi special account: name = Tobi, username = tobi1027
-    function isTobiAccount(p = profile) {
-      return (
-        String(p?.name || "").trim().toLowerCase() === "tobi" &&
-        String(p?.handle || "").trim().toLowerCase() === "tobi1027"
-      );
-    }
-
     let voiceState = { inRoom: false, muted: false, handRaised: false };
     let chatMode = "lounge"; // "lounge" | "dm"
     let selectedDmHandle = "";
-    let pendingPostMedia = null; // { type: "image" | "video", dataUrl, name }
-    let pendingChatMedia = null; // { type: "image" | "video", dataUrl, name }
+    let pendingPostMedia = null;
+    let pendingChatMedia = null;
 
     let latestPosts = {};
     let latestMessages = {};
@@ -496,7 +492,7 @@
 
     document.getElementById("btn-gate-enter").addEventListener("click", async () => {
       const cleanName = gateName.value.trim();
-      const cleanHandle = gateHandle.value.trim().replace(/^@+/, "").replace(/\s+/g, "_");
+      const cleanHandle = gateHandle.value.trim().replace(/^@+/, "").replace(/\s+/g, "_").toLowerCase();
 
       if (!cleanName || !cleanHandle) {
         gateError.textContent = "Display Name နဲ့ @Username နှစ်ခုလုံး ရိုက်ထည့်ပါ။";
@@ -527,9 +523,6 @@
       localStorage.setItem("memo_remember_profile", JSON.stringify(profile));
       localStorage.setItem("memo_remember_uid", uid);
 
-      const tobiMod = isTobiAccount(profile);
-      document.getElementById("tobi-admin-badge").classList.toggle("hidden", !tobiMod);
-
       const identityLabel = profile.handle ? `${profile.name || "Friend"} (@${profile.handle})` : "";
       document.getElementById("top-identity").textContent = profile.handle ? `@${profile.handle}` : "";
       document.getElementById("top-mood-pill").textContent = profile.mood || "Chill";
@@ -555,7 +548,7 @@
 
     document.getElementById("btn-save-profile").addEventListener("click", async () => {
       const n = document.getElementById("prof-name").value.trim();
-      const h = document.getElementById("prof-handle").value.trim().replace(/^@+/, "").replace(/\s+/g, "_");
+      const h = document.getElementById("prof-handle").value.trim().replace(/^@+/, "").replace(/\s+/g, "_").toLowerCase();
       const m = document.getElementById("prof-mood").value;
       const b = document.getElementById("prof-bio").value.trim();
 
@@ -570,16 +563,15 @@
       alert("Profile မှတ်သားပြီးပါပြီ!");
     });
 
-    // Clear own posts and chat messages button
     document.getElementById("btn-clear-my-content").addEventListener("click", async () => {
       if (!confirm("ကိုယ်တင်ထားသော Post များနှင့် Chat စာများကို ဖျက်မှာ သေချာလား?")) return;
       try {
         const postDeletes = Object.entries(latestPosts || {})
-          .filter(([, p]) => p && (p.uid === uid || (isTobiAccount() && p.handle === profile.handle)))
+          .filter(([, p]) => p && p.uid === uid)
           .map(([id]) => fbDelete(`posts/${id}`));
 
         const msgDeletes = Object.entries(latestMessages || {})
-          .filter(([, m]) => m && (m.uid === uid || (isTobiAccount() && m.handle === profile.handle)))
+          .filter(([, m]) => m && m.uid === uid)
           .map(([id]) => fbDelete(`messages/${id}`));
 
         await Promise.all([...postDeletes, ...msgDeletes]);
@@ -590,7 +582,6 @@
       }
     });
 
-    // Navigation Tabs
     const navItems = document.querySelectorAll(".nav-item");
     const tabSections = {
       feed: document.getElementById("tab-feed"),
@@ -617,7 +608,6 @@
       });
     });
 
-    // Media File Reader helper (Image & Video)
     function readMediaFile(file, maxBytes = 8 * 1024 * 1024) {
       return new Promise((resolve, reject) => {
         if (!file) return reject(new Error("File မရွေးရသေးပါ"));
@@ -650,7 +640,6 @@
       return `<img src="${media.dataUrl}" alt="${esc(media.name || "photo")}" class="w-full ${compact ? "max-h-52" : "max-h-80"} object-cover rounded-xl bg-black/40 mt-1.5" />`;
     }
 
-    // Post Media Handling
     const postMediaInput = document.getElementById("post-media-input");
     const postMediaPreview = document.getElementById("post-media-preview");
     const postMediaName = document.getElementById("post-media-name");
@@ -677,7 +666,6 @@
       postMediaPreview.classList.add("hidden");
     });
 
-    // Feed Composer & Feed Rendering
     const postInput = document.getElementById("post-input");
     const postCharCount = document.getElementById("post-char-count");
     const feedSearch = document.getElementById("feed-search");
@@ -728,9 +716,8 @@
 
     window.editOwnPost = async (postId, oldText) => {
       const post = latestPosts[postId];
-      if (!post) return;
-      if (post.uid !== uid && !isTobiAccount()) return;
-      const updated = prompt("Post စာသားကို ပြန်ပြင်ပါ:", oldText || "");
+      if (!post || post.uid !== uid) return;
+      const updated = prompt("ကိုယ့် Post စာသားကို ပြန်ပြင်ပါ:", oldText || "");
       if (updated === null) return;
       const trimmed = updated.trim().slice(0, 500);
       if (!trimmed && !post.media) return;
@@ -742,10 +729,9 @@
       }
     };
 
-    window.deletePostItem = async (postId) => {
+    window.deleteOwnPost = async (postId) => {
       const post = latestPosts[postId];
-      if (!post) return;
-      if (post.uid !== uid && !isTobiAccount()) return;
+      if (!post || post.uid !== uid) return;
       if (!confirm("ဒီ Post ကို ဖျက်မှာ သေချာလား?")) return;
       try {
         await fbDelete(`posts/${postId}`);
@@ -755,7 +741,6 @@
       }
     };
 
-    
     window.addPostComment = async (postId) => {
       if (!profile.name || !profile.handle) return checkRememberedUser();
       const input = document.getElementById(`cmt-input-${postId}`);
@@ -778,10 +763,9 @@
       }
     };
 
-    window.deleteCommentItem = async (postId, commentId) => {
+    window.deleteOwnComment = async (postId, commentId) => {
       const cmt = latestPosts?.[postId]?.comments?.[commentId];
-      if (!cmt) return;
-      if (cmt.uid !== uid && !isTobiAccount()) return;
+      if (!cmt || cmt.uid !== uid) return;
       try {
         await fbDelete(`posts/${postId}/comments/${commentId}`);
         await syncAllData();
@@ -791,7 +775,6 @@
     function renderFeed(rawPosts) {
       const container = document.getElementById("feed-list");
       const query = (feedSearch.value || "").trim().toLowerCase();
-      const canModAll = isTobiAccount();
 
       const items = Object.entries(rawPosts || {})
         .map(([id, p]) => ({ id, ...p }))
@@ -823,15 +806,13 @@
 
       container.innerHTML = items.map(p => {
         const isMine = p.uid === uid;
-        const canEdit = isMine || canModAll;
-        const canDelete = isMine || canModAll;
         const commentsArr = Object.entries(p.comments || {})
           .map(([cid, c]) => ({ cid, ...c }))
           .filter(c => c && c.text)
           .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
 
         const commentsHtml = commentsArr.map(c => {
-          const canDelCmt = c.uid === uid || canModAll;
+          const isMyCmt = c.uid === uid;
           return `
             <div class="flex items-start justify-between gap-2 bg-[#161821] border border-[#282C3C]/80 rounded-xl px-3 py-2 text-xs">
               <div class="min-w-0">
@@ -840,7 +821,7 @@
               </div>
               <div class="flex items-center gap-2 shrink-0">
                 <span class="text-[10px] text-gray-500">${fmtTime(c.createdAt)}</span>
-                ${canDelCmt ? `<button onclick="window.deleteCommentItem('${p.id}', '${c.cid}')" class="text-[10px] text-red-400 hover:underline">ဖျက်</button>` : ""}
+                ${isMyCmt ? `<button onclick="window.deleteOwnComment('${p.id}', '${c.cid}')" class="text-[10px] text-red-400 hover:underline">ဖျက်</button>` : ""}
               </div>
             </div>
           `;
@@ -860,20 +841,16 @@
                 </div>
               </div>
 
-              ${(canEdit || canDelete) ? `
+              ${isMine ? `
                 <div class="flex items-center gap-1.5">
-                  ${canEdit ? `
-                    <button onclick="window.editOwnPost('${p.id}', ${JSON.stringify(p.text || "")})"
-                      class="text-[11px] px-2.5 py-1 rounded-lg bg-[#1E212D] border border-[#282C3C] text-gray-300 hover:border-[#FF6B2B]">
-                      ပြင်မည်
-                    </button>
-                  ` : ""}
-                  ${canDelete ? `
-                    <button onclick="window.deletePostItem('${p.id}')"
-                      class="text-[11px] px-2.5 py-1 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20">
-                      ဖျက်မည်
-                    </button>
-                  ` : ""}
+                  <button onclick="window.editOwnPost('${p.id}', ${JSON.stringify(p.text || "")})"
+                    class="text-[11px] px-2.5 py-1 rounded-lg bg-[#1E212D] border border-[#282C3C] text-gray-300 hover:border-[#FF6B2B]">
+                    ပြင်မည်
+                  </button>
+                  <button onclick="window.deleteOwnPost('${p.id}')"
+                    class="text-[11px] px-2.5 py-1 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20">
+                    ဖျက်မည်
+                  </button>
                 </div>
               ` : ""}
             </div>
@@ -905,7 +882,6 @@
       }).join("");
     }
 
-    // Chat Mode: Lounge vs Person-to-Person DM
     const btnModeLounge = document.getElementById("btn-mode-lounge");
     const btnModeDm = document.getElementById("btn-mode-dm");
     const dmTargetBar = document.getElementById("dm-target-bar");
@@ -916,7 +892,7 @@
 
     function setChatMode(mode, partnerHandle = selectedDmHandle) {
       chatMode = mode;
-      if (partnerHandle) selectedDmHandle = partnerHandle;
+      if (partnerHandle) selectedDmHandle = partnerHandle.toLowerCase();
 
       const isDm = chatMode === "dm";
       btnModeLounge.className = isDm
@@ -930,13 +906,13 @@
       dmTargetBar.classList.toggle("hidden", !isDm);
 
       if (isDm) {
-        chatRoomTitle.innerHTML = `<i data-lucide="lock" class="w-4 h-4 text-[#FF6B2B]"></i><span>Person to Person DM ${selectedDmHandle ? `• @${esc(selectedDmHandle)}` : ""}</span>`;
+        chatRoomTitle.innerHTML = `<i data-lucide="lock" class="w-4 h-4 text-[#FF6B2B]"></i><span>Private DM ${selectedDmHandle ? `• @${esc(selectedDmHandle)}` : ""}</span>`;
         chatRoomSubtitle.textContent = selectedDmHandle
-          ? `@${selectedDmHandle} နဲ့ နှစ်ယောက်ချင်း စကားပြောနေပါသည်။`
-          : "အပေါ်မှ သူငယ်ချင်း တစ်ယောက်ကို ရွေးပြီး စကားစပြောပါ။";
+          ? `ကိုယ်နဲ့ @${selectedDmHandle} နှစ်ယောက်တည်းသာ မြင်နိုင်သော Private စကားဝိုင်း။`
+          : "အပေါ်မှ စကားပြောလိုသော သူငယ်ချင်း တစ်ယောက်ကို ရွေးပါ။";
       } else {
         chatRoomTitle.innerHTML = `<i data-lucide="message-circle" class="w-4 h-4 text-[#FF6B2B]"></i><span>Friends Lounge Chat</span>`;
-        chatRoomSubtitle.textContent = "ကိုယ်ပို့ထားသော စာများကို ဖျက်နိုင်ပြီး Tobi (@tobi1027) က အားလုံး၏ စာများကို ဖျက်နိုင်ပါသည်။";
+        chatRoomSubtitle.textContent = "ကိုယ်ပို့ထားသော စာများကို ကိုယ်တိုင် ဖျက်နိုင်ပါသည်။";
       }
 
       lucide.createIcons();
@@ -947,29 +923,27 @@
     btnModeDm.addEventListener("click", () => setChatMode("dm"));
 
     dmPartnerSelect.addEventListener("change", () => {
-      selectedDmHandle = dmPartnerSelect.value;
-      dmPartnerLabel.textContent = selectedDmHandle ? `@${selectedDmHandle}` : "သူငယ်ချင်း တစ်ယောက် ရွေးပါ";
+      selectedDmHandle = (dmPartnerSelect.value || "").toLowerCase();
+      dmPartnerLabel.textContent = selectedDmHandle ? `@${selectedDmHandle}` : "သူငယ်ချင်း ရွေးပါ";
       setChatMode("dm", selectedDmHandle);
     });
 
     window.startDmWith = (handle) => {
-      const clean = String(handle || "").replace(/^@+/, "");
-      if (!clean) return;
+      const clean = String(handle || "").replace(/^@+/, "").toLowerCase();
+      if (!clean || clean === String(profile.handle || "").toLowerCase()) return;
       selectedDmHandle = clean;
       dmPartnerSelect.value = clean;
       dmPartnerLabel.textContent = `@${clean}`;
-      // Switch to Chat tab & DM mode
       document.querySelector('.nav-item[data-nav="chat"]')?.click();
       setChatMode("dm", clean);
     };
 
-    function getDmThreadKey(h1, h2) {
-      const a = String(h1 || "").toLowerCase();
-      const b = String(h2 || "").toLowerCase();
+    function getPrivateDmKey(h1, h2) {
+      const a = String(h1 || "").trim().toLowerCase();
+      const b = String(h2 || "").trim().toLowerCase();
       return [a, b].sort().join("__");
     }
 
-    // Chat Photo / Video Attachment
     const chatMediaInput = document.getElementById("chat-media-input");
     const chatMediaPreview = document.getElementById("chat-media-preview");
     const chatMediaName = document.getElementById("chat-media-name");
@@ -1005,16 +979,17 @@
 
       if (chatMode === "dm") {
         if (!selectedDmHandle) {
-          alert("1-on-1 စာပို့ရန် သူငယ်ချင်း တစ်ယောက် ရွေးပါ။");
+          alert("Private DM ပို့ရန် သူငယ်ချင်း တစ်ယောက် ရွေးပါ။");
           return;
         }
-        const threadKey = getDmThreadKey(profile.handle, selectedDmHandle);
+        const myHandle = String(profile.handle).toLowerCase();
+        const threadKey = getPrivateDmKey(myHandle, selectedDmHandle);
         try {
-          await fbPost(`direct_messages/${threadKey}`, {
+          await fbPost(`private_dms/${threadKey}`, {
             uid,
             name: profile.name,
-            handle: profile.handle,
-            toHandle: selectedDmHandle,
+            handle: myHandle,
+            participants: [myHandle, selectedDmHandle],
             text,
             media: pendingChatMedia || null,
             createdAt: Date.now()
@@ -1026,7 +1001,7 @@
           chatMediaPreview.classList.add("hidden");
           await syncAllData();
         } catch (err) {
-          alert("DM စာပို့မရပါ: " + err.message);
+          alert("Private DM ပို့မရပါ: " + err.message);
         }
         return;
       }
@@ -1051,11 +1026,9 @@
       }
     }
 
-    // Tobi (@tobi1027) can delete ANY lounge chat message; others can delete their own
-    window.deleteChatMessageItem = async (msgId) => {
+    window.deleteOwnChatMessage = async (msgId) => {
       const msg = latestMessages[msgId];
-      if (!msg) return;
-      if (msg.uid !== uid && !isTobiAccount()) return;
+      if (!msg || msg.uid !== uid) return;
       try {
         await fbDelete(`messages/${msgId}`);
         await syncAllData();
@@ -1064,12 +1037,13 @@
       }
     };
 
-    window.deleteDmMessageItem = async (threadKey, msgId) => {
+    window.deleteOwnDmMessage = async (threadKey, msgId) => {
       const msg = latestDms?.[threadKey]?.[msgId];
       if (!msg) return;
-      if (msg.uid !== uid && !isTobiAccount()) return;
+      const isMine = msg.uid === uid || String(msg.handle || "").toLowerCase() === String(profile.handle || "").toLowerCase();
+      if (!isMine) return;
       try {
-        await fbDelete(`direct_messages/${threadKey}/${msgId}`);
+        await fbDelete(`private_dms/${threadKey}/${msgId}`);
         await syncAllData();
       } catch (err) {
         alert("DM စာဖျက်မရပါ: " + err.message);
@@ -1083,7 +1057,7 @@
 
     function renderCurrentChatView() {
       if (chatMode === "dm") {
-        renderDmChat();
+        renderPrivateDmChat();
       } else {
         renderLoungeChat(latestMessages);
       }
@@ -1091,7 +1065,6 @@
 
     function renderLoungeChat(rawMsgs) {
       const container = document.getElementById("chat-list");
-      const canModAll = isTobiAccount();
 
       const list = Object.entries(rawMsgs || {})
         .map(([id, m]) => ({ id, ...m }))
@@ -1109,7 +1082,6 @@
 
       container.innerHTML = list.map(m => {
         const isMine = m.uid === uid;
-        const canDelete = isMine || canModAll;
         return `
           <div class="rounded-2xl px-3.5 py-2.5 border ${isMine ? "bg-[#FF6B2B]/15 border-[#FF6B2B]/40 ml-7" : "bg-[#1E212D] border-[#282C3C] mr-7"}">
             <div class="flex items-center justify-between gap-2 text-[11px] mb-1">
@@ -1119,10 +1091,10 @@
               </div>
               <div class="flex items-center gap-2 shrink-0">
                 <span class="text-[10px] text-gray-500">${fmtTime(m.createdAt)}</span>
-                ${canDelete ? `
-                  <button onclick="window.deleteChatMessageItem('${m.id}')"
+                ${isMine ? `
+                  <button onclick="window.deleteOwnChatMessage('${m.id}')"
                     class="text-[10px] font-bold text-red-400 hover:underline">
-                    ${!isMine && canModAll ? "Tobi ဖျက်မည်" : "ဖျက်မည်"}
+                    ဖျက်မည်
                   </button>
                 ` : ""}
               </div>
@@ -1136,33 +1108,37 @@
       container.scrollTop = container.scrollHeight;
     }
 
-    function renderDmChat() {
+    function renderPrivateDmChat() {
       const container = document.getElementById("chat-list");
-      const canModAll = isTobiAccount();
+      const myHandle = String(profile.handle || "").toLowerCase();
 
-      if (!selectedDmHandle || !profile.handle) {
+      if (!selectedDmHandle || !myHandle || selectedDmHandle === myHandle) {
         document.getElementById("chat-count-badge").textContent = `0 DMs`;
         container.innerHTML = `<div class="text-center text-xs text-gray-500 py-8">အပေါ်က Friends Directory သို့မဟုတ် Dropdown မှ စကားပြောလိုသော သူငယ်ချင်းကို ရွေးပါ။</div>`;
         return;
       }
 
-      const threadKey = getDmThreadKey(profile.handle, selectedDmHandle);
+      const threadKey = getPrivateDmKey(myHandle, selectedDmHandle);
       const rawThread = latestDms?.[threadKey] || {};
+
       const list = Object.entries(rawThread)
         .map(([id, m]) => ({ id, ...m }))
-        .filter(m => m && ((typeof m.text === "string" && m.text.trim().length > 0) || m.media))
+        .filter(m => {
+          if (!m || (!((typeof m.text === "string" && m.text.trim().length > 0)) && !m.media)) return false;
+          const sender = String(m.handle || "").toLowerCase();
+          return sender === myHandle || sender === selectedDmHandle;
+        })
         .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
 
       document.getElementById("chat-count-badge").textContent = `${list.length} DMs`;
 
       if (!list.length) {
-        container.innerHTML = `<div class="text-center text-xs text-gray-500 py-8">@${esc(selectedDmHandle)} နဲ့ 1-on-1 စာမရှိသေးပါ။ စာတစ်စောင် ပို့ကြည့်ပါ။</div>`;
+        container.innerHTML = `<div class="text-center text-xs text-gray-500 py-8">@${esc(selectedDmHandle)} နဲ့ Private စာမရှိသေးပါ။ နှစ်ယောက်တည်းသာ မြင်ရမယ့် စာတစ်စောင် ပို့ကြည့်ပါ။</div>`;
         return;
       }
 
-      container.innerHTML = list.map(m => {
-        const isMine = m.uid === uid || String(m.handle || "").toLowerCase() === String(profile.handle || "").toLowerCase();
-        const canDelete = isMine || canModAll;
+    container.innerHTML = list.map(m => {
+        const isMine = m.uid === uid || String(m.handle || "").toLowerCase() === myHandle;
         return `
           <div class="rounded-2xl px-3.5 py-2.5 border ${isMine ? "bg-[#FF6B2B]/15 border-[#FF6B2B]/40 ml-7" : "bg-[#1E212D] border-[#282C3C] mr-7"}">
             <div class="flex items-center justify-between gap-2 text-[11px] mb-1">
@@ -1172,8 +1148,8 @@
               </div>
               <div class="flex items-center gap-2 shrink-0">
                 <span class="text-[10px] text-gray-500">${fmtTime(m.createdAt)}</span>
-                ${canDelete ? `
-                  <button onclick="window.deleteDmMessageItem('${threadKey}', '${m.id}')"
+                ${isMine ? `
+                  <button onclick="window.deleteOwnDmMessage('${threadKey}', '${m.id}')"
                     class="text-[10px] font-bold text-red-400 hover:underline">
                     ဖျက်မည်
                   </button>
@@ -1197,12 +1173,14 @@
 
       document.getElementById("friends-count").textContent = `${users.length} members`;
 
-      // Populate DM partner dropdown (exclude own handle)
-      const others = users.filter(u => String(u.handle).toLowerCase() !== String(profile.handle || "").toLowerCase());
+      const myHandle = String(profile.handle || "").toLowerCase();
+      const others = users.filter(u => String(u.handle).toLowerCase() !== myHandle);
       const prevSelected = selectedDmHandle;
-      dmPartnerSelect.innerHTML = `<option value="">-- Friend ရွေးပါ --</option>` + others.map(u => `
-        <option value="${esc(u.handle)}" ${u.handle === prevSelected ? "selected" : ""}>${esc(u.name || u.handle)} (@${esc(u.handle)})</option>
-      `).join("");
+
+      dmPartnerSelect.innerHTML = `<option value="">-- Friend ရွေးပါ --</option>` + others.map(u => {
+        const h = String(u.handle).toLowerCase();
+        return `<option value="${esc(h)}" ${h === prevSelected ? "selected" : ""}>${esc(u.name || u.handle)} (@${esc(u.handle)})</option>`;
+      }).join("");
 
       if (!users.length) {
         strip.innerHTML = `<span class="text-xs text-gray-500">No members yet</span>`;
@@ -1210,9 +1188,10 @@
       }
 
       strip.innerHTML = users.map(u => {
-        const isSelf = String(u.handle).toLowerCase() === String(profile.handle || "").toLowerCase();
+        const h = String(u.handle).toLowerCase();
+        const isSelf = h === myHandle;
         return `
-          <button type="button" ${!isSelf ? `onclick="window.startDmWith('${esc(u.handle)}')"` : ""}
+          <button type="button" ${!isSelf ? `onclick="window.startDmWith('${esc(h)}')"` : ""}
             class="shrink-0 text-left bg-[#1E212D] border ${!isSelf ? "border-[#282C3C] hover:border-[#FF6B2B] cursor-pointer" : "border-[#FF6B2B]/40 cursor-default"} rounded-xl px-3 py-1.5 text-xs transition">
             <div class="font-semibold text-white">@${esc(u.handle)} ${isSelf ? `<span class="text-[10px] text-[#FF944D]">(You)</span>` : `<span class="text-[10px] text-emerald-400">• DM</span>`}</div>
             <div class="text-[10px] text-[#FF944D]">${esc(u.mood || "Chill")}</div>
@@ -1221,7 +1200,6 @@
       }).join("");
     }
 
-    // Voice Room Presence
     async function pushVoicePresence() {
       if (!profile.name || !profile.handle) return;
       if (voiceState.inRoom) {
@@ -1295,17 +1273,23 @@
 
     async function syncAllData() {
       try {
-        const [posts, messages, dms, users, voice] = await Promise.all([
+        const myHandle = String(profile.handle || "").toLowerCase();
+        const dmFetch = (chatMode === "dm" && selectedDmHandle && myHandle)
+          ? fbGet(`private_dms/${getPrivateDmKey(myHandle, selectedDmHandle)}`)
+            .then(threadData => ({ [getPrivateDmKey(myHandle, selectedDmHandle)]: threadData || {} }))
+          : Promise.resolve({});
+
+        const [posts, messages, dmThreadMap, users, voice] = await Promise.all([
           fbGet("posts"),
           fbGet("messages"),
-          fbGet("direct_messages"),
+          dmFetch,
           fbGet("users"),
           fbGet("voice_room")
         ]);
 
         latestPosts = posts || {};
         latestMessages = messages || {};
-        latestDms = dms || {};
+        latestDms = { ...latestDms, ...(dmThreadMap || {}) };
         latestUsers = users || {};
         latestVoice = voice || {};
 
