@@ -15,6 +15,7 @@
       --accent-2: #ff944d;
       --border: #272b38;
       --ok: #22c55e;
+      --warn: #f59e0b;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
     body { background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 84px; }
@@ -25,7 +26,7 @@
       padding: 14px 16px; display: flex; align-items: center; justify-content: space-between;
     }
     .brand { font-size: 20px; font-weight: 800; background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .status-pill { font-size: 12px; padding: 4px 10px; border-radius: 999px; background: var(--card-2); border: 1px solid var(--border); color: var(--ok); }
+    .status-pill { font-size: 12px; padding: 4px 10px; border-radius: 999px; background: var(--card-2); border: 1px solid var(--border); color: var(--warn); }
     .container { max-width: 640px; margin: 0 auto; padding: 14px; display: flex; flex-direction: column; gap: 14px; }
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 14px; }
     textarea, input {
@@ -121,22 +122,8 @@
     <button id="nav-profile">Profile</button>
   </nav>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getDatabase, ref, push, set, onValue, update } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDhEf2wFnYhAhf2YYYELl6ffM72kGaRUH0",
-      authDomain: "memo-app-1c08a.firebaseapp.com",
-      databaseURL: "https://memo-app-1c08a-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "memo-app-1c08a",
-      storageBucket: "memo-app-1c08a.firebasestorage.app",
-      messagingSenderId: "1012608684376",
-      appId: "1:1012608684376:web:15f4eeea82a6dfbd36552d"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+  <script>
+    const DB_BASE = "https://memo-app-1c08a-default-rtdb.asia-southeast1.firebasedatabase.app";
 
     let uid = localStorage.getItem("memo_uid");
     if (!uid) {
@@ -156,25 +143,51 @@
     const profHandleEl = document.getElementById("prof-handle");
     const profBioEl = document.getElementById("prof-bio");
 
+    async function dbGet(path) {
+      const res = await fetch(`${DB_BASE}/${path}.json`, { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return await res.json();
+    }
+
+    async function dbPost(path, data) {
+      const res = await fetch(`${DB_BASE}/${path}.json`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return await res.json();
+    }
+
+    async function dbPut(path, data) {
+      const res = await fetch(`${DB_BASE}/${path}.json`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return await res.json();
+    }
+
+    async function dbPatch(path, data) {
+      const res = await fetch(`${DB_BASE}/${path}.json`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return await res.json();
+    }
+
     function syncProfileUI() {
       postingAsEl.textContent = `${profile.name} (@${profile.handle})`;
       profNameEl.value = profile.name;
       profHandleEl.value = profile.handle;
       profBioEl.value = profile.bio;
       localStorage.setItem("memo_profile", JSON.stringify(profile));
-      set(ref(db, `users/${uid}`), { ...profile, updatedAt: Date.now() }).catch(() => {});
+      dbPut(`users/${uid}`, { ...profile, updatedAt: Date.now() }).catch(() => {});
     }
     syncProfileUI();
-
-    onValue(ref(db, ".info/connected"), (snap) => {
-      if (snap.val() === true) {
-        statusEl.textContent = "Live Connected";
-        statusEl.style.color = "#22c55e";
-      } else {
-        statusEl.textContent = "Offline / Retrying";
-        statusEl.style.color = "#f59e0b";
-      }
-    });
 
     const tabs = {
       feed: { el: document.getElementById("tab-feed"), btn: document.getElementById("nav-feed") },
@@ -201,25 +214,12 @@
       alert("Profile သိမ်းပြီးပါပြီ!");
     };
 
-    document.getElementById("btn-post").onclick = async () => {
-      const input = document.getElementById("post-input");
-      const text = input.value.trim();
-      if (!text) return;
-      await push(ref(db, "posts"), {
-        uid,
-        name: profile.name,
-        handle: profile.handle,
-        text,
-        likes: 0,
-        createdAt: Date.now()
-      });
-      input.value = "";
-    };
-
     const feedList = document.getElementById("feed-list");
-    onValue(ref(db, "posts"), (snap) => {
-      const val = snap.val() || {};
-      const items = Object.entries(val)
+    const chatList = document.getElementById("chat-list");
+
+    function renderPosts(val) {
+      const data = val || {};
+      const items = Object.entries(data)
         .map(([id, p]) => ({ id, ...p }))
         .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
@@ -238,15 +238,106 @@
           </div>
         </div>
       `).join("") || `<div class="card" style="color:var(--muted); text-align:center;">Post များ မရှိသေးပါ။ ပထမဆုံး Post တစ်ခု တင်လိုက်ပါ!</div>`;
-    });
+    }
 
-    window.likePost = (id, currentLikes) => {
-      update(ref(db, `posts/${id}`), { likes: (currentLikes || 0) + 1 }).catch(() => {});
+    function renderMessages(val) {
+      const data = val || {};
+      const msgs = Object.entries(data)
+        .map(([id, m]) => ({ id, ...m }))
+        .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+
+      chatList.innerHTML = msgs.map(m => `
+        <div class="msg ${m.uid === uid ? "mine" : ""}">
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+            <span class="handle">@${escapeHtml(m.handle || m.name || "user")}</span>
+            <span class="time">${formatTime(m.createdAt)}</span>
+          </div>
+          <div style="font-size:14px; word-break:break-word;">${escapeHtml(m.text || "")}</div>
+        </div>
+      `).join("") || `<div style="color:var(--muted); font-size:13px; text-align:center; padding:16px;">စကားစမြောက် ပြောကြည့်ပါ!</div>`;
+      chatList.scrollTop = chatList.scrollHeight;
+    }
+
+    async function refreshAll() {
+      try {
+        const [posts, messages] = await Promise.all([dbGet("posts"), dbGet("messages")]);
+        renderPosts(posts);
+        renderMessages(messages);
+        statusEl.textContent = "Live Connected";
+        statusEl.style.color = "#22c55e";
+      } catch (err) {
+        statusEl.textContent = "Retry Needed";
+        statusEl.style.color = "#f59e0b";
+      }
+    }
+
+    document.getElementById("btn-post").onclick = async () => {
+      const input = document.getElementById("post-input");
+      const text = input.value.trim();
+      if (!text) return;
+      try {
+        await dbPost("posts", {
+          uid,
+          name: profile.name,
+          handle: profile.handle,
+          text,
+          likes: 0,
+          createdAt: Date.now()
+        });
+        input.value = "";
+        await refreshAll();
+      } catch (err) {
+        alert("Post တင်မရပါ: " + err.message);
+      }
+    };
+
+    window.likePost = async (id, currentLikes) => {
+      try {
+        await dbPatch(`posts/${id}`, { likes: (currentLikes || 0) + 1 });
+        await refreshAll();
+      } catch (err) {}
     };
 
     async function sendChat() {
       const input = document.getElementById("chat-input");
       const text = input.value.trim();
       if (!text) return;
-      await push(ref(db, "messages"),
-    
+      try {
+        await dbPost("messages", {
+          uid,
+          name: profile.name,
+          handle: profile.handle,
+          text,
+          createdAt: Date.now()
+        });
+        input.value = "";
+        await refreshAll();
+      } catch (err) {
+        alert("စာပို့မရပါ: " + err.message);
+      }
+    }
+    document.getElementById("btn-send-chat").onclick = sendChat;
+    document.getElementById("chat-input").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") sendChat();
+    });
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function formatTime(ts) {
+      if (!ts) return "";
+      const d = new Date(ts);
+      return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    }
+
+    refreshAll();
+    setInterval(refreshAll, 4000);
+  </script>
+</body>
+  </html>
+  
