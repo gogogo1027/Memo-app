@@ -1,2117 +1,252 @@
 <!DOCTYPE html>
-<html lang="my" class="dark">
+<html lang="my">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Memo — Your Safe Space & Voice Hangout</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Myanmar:wght@400;500;600;700&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'Noto Sans Myanmar', 'Padauk', 'sans-serif'],
-          },
-          colors: {
-            memo: {
-              bg: '#0D0E12',
-              card: '#161821',
-              elevated: '#1E212E',
-              border: '#2A2E3F',
-              orange: '#FF6B00',
-              orangeGlow: '#FF8A33',
-              purple: '#8B5CF6',
-              cyan: '#00F5D4',
-              green: '#22C55E',
-              rose: '#F43F5E',
-            }
-          },
-          animation: {
-            'wave': 'wave 1.1s ease-in-out infinite',
-            'slide-up': 'slideUp 0.22s ease-out',
-          },
-          keyframes: {
-            wave: {
-              '0%, 100%': { height: '5px' },
-              '50%': { height: '16px' },
-            },
-            slideUp: {
-              '0%': { transform: 'translateY(16px)', opacity: '0' },
-              '100%': { transform: 'translateY(0)', opacity: '1' },
-            }
-          }
-        }
-      }
-    }
-  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memo - Live Social & Chat</title>
   <style>
-    * {
-      -webkit-tap-highlight-color: transparent;
-      box-sizing: border-box;
+    :root {
+      --bg: #0b0c10;
+      --card: #15171e;
+      --card-2: #1d202a;
+      --text: #f3f4f6;
+      --muted: #9ca3af;
+      --accent: #ff6b2b;
+      --accent-2: #ff944d;
+      --border: #272b38;
+      --ok: #22c55e;
     }
-    html, body {
-      background-color: #07080B;
-      color: #F3F4F6;
-      font-family: 'Inter', 'Noto Sans Myanmar', 'Padauk', sans-serif;
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 84px; }
+    header {
+      position: sticky; top: 0; z-index: 20;
+      background: rgba(11,12,16,0.9); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 16px; display: flex; align-items: center; justify-content: space-between;
     }
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
+    .brand { font-size: 20px; font-weight: 800; background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .status-pill { font-size: 12px; padding: 4px 10px; border-radius: 999px; background: var(--card-2); border: 1px solid var(--border); color: var(--ok); }
+    .container { max-width: 640px; margin: 0 auto; padding: 14px; display: flex; flex-direction: column; gap: 14px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 14px; }
+    textarea, input {
+      width: 100%; background: var(--card-2); color: var(--text);
+      border: 1px solid var(--border); border-radius: 12px; padding: 11px 12px;
+      font-size: 14px; outline: none;
     }
-    .no-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
+    textarea:focus, input:focus { border-color: var(--accent); }
+    textarea { resize: vertical; min-height: 76px; }
+    .row { display: flex; gap: 8px; align-items: center; margin-top: 10px; }
+    button {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff; border: none; border-radius: 12px; padding: 10px 16px;
+      font-weight: 700; font-size: 14px; cursor: pointer;
     }
-    /* Omlet Arcade Signature Neon Avatar Frames */
-    .frame-orange {
-      box-shadow: 0 0 0 2.5px #FF6B00, 0 0 14px rgba(255, 107, 0, 0.65);
+    button.secondary { background: var(--card-2); color: var(--text); border: 1px solid var(--border); }
+    button.small { padding: 6px 12px; font-size: 12px; border-radius: 9px; }
+    .post { display: flex; flex-direction: column; gap: 8px; }
+    .post-head { display: flex; justify-content: space-between; align-items: center; }
+    .author { font-weight: 700; font-size: 14px; }
+    .handle { color: var(--accent-2); font-size: 12px; }
+    .time { color: var(--muted); font-size: 11px; }
+    .post-body { font-size: 15px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+    .post-actions { display: flex; gap: 10px; margin-top: 4px; }
+    .chat-box { display: flex; flex-direction: column; gap: 8px; max-height: 55vh; overflow-y: auto; padding: 4px 0; }
+    .msg { background: var(--card-2); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; }
+    .msg.mine { background: rgba(255, 107, 43, 0.16); border-color: rgba(255, 107, 43, 0.45); margin-left: 24px; }
+    .nav {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 20;
+      background: rgba(15,17,23,0.95); backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+      display: grid; grid-template-columns: repeat(3, 1fr); padding: 8px 6px;
     }
-    .frame-purple {
-      box-shadow: 0 0 0 2.5px #8B5CF6, 0 0 14px rgba(139, 92, 246, 0.65);
-    }
-    .frame-cyan {
-      box-shadow: 0 0 0 2.5px #00F5D4, 0 0 14px rgba(0, 245, 212, 0.65);
-    }
-    .frame-rose {
-      box-shadow: 0 0 0 2.5px #F43F5E, 0 0 14px rgba(244, 63, 94, 0.65);
-    }
-    /* Active Voice Speaking Ring */
-    .speaking-ring {
-      animation: speakingPulse 1.3s infinite alternate;
-    }
-    @keyframes speakingPulse {
-      from {
-        box-shadow: 0 0 0 2px #22C55E, 0 0 8px rgba(34, 197, 94, 0.55);
-      }
-      to {
-        box-shadow: 0 0 0 3.5px #4ADE80, 0 0 18px rgba(34, 197, 94, 0.95);
-      }
-    }
-    /* Omlet Arcade Center Floating Button */
-    .omlet-fab {
-      background: linear-gradient(135deg, #FF6B00 0%, #8B5CF6 100%);
-      box-shadow: 0 4px 20px rgba(255, 107, 0, 0.55), 0 0 0 4px #0D0E12;
-    }
-    .omlet-fab:active {
-      transform: scale(0.92);
-    }
+    .nav button { background: transparent; color: var(--muted); border-radius: 10px; padding: 8px; font-size: 13px; }
+    .nav button.active { background: var(--card-2); color: var(--accent-2); }
+    .hidden { display: none; }
+    .label { font-size: 12px; color: var(--muted); margin-bottom: 6px; display: block; }
   </style>
 </head>
-<body class="flex items-center justify-center">
+<body>
+  <header>
+    <div class="brand">Memo</div>
+    <div id="conn-status" class="status-pill">Connecting...</div>
+  </header>
 
-  <!-- Strict Mobile App Shell -->
-  <div id="app-shell" class="relative w-full max-w-md mx-auto h-screen sm:h-[850px] sm:max-h-[96vh] bg-memo-bg sm:rounded-[36px] sm:border-[3px] sm:border-memo-border sm:shadow-[0_0_50px_rgba(255,107,0,0.14)] flex flex-col overflow-hidden">
-
-    <!-- ==================== TOP HEADER ==================== -->
-    <header class="shrink-0 px-4 pt-3.5 pb-2.5 bg-memo-bg/95 backdrop-blur-md border-b border-memo-border/80 z-20">
-      <div class="flex items-center justify-between">
-        <!-- Memo Brand Logo & Tagline -->
-        <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-memo-orange via-amber-500 to-memo-purple flex items-center justify-center shadow-[0_0_15px_rgba(255,107,0,0.45)] shrink-0">
-            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
-              <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-              <line x1="12" x2="12" y1="19" y2="22"/>
-            </svg>
-          </div>
-          <div>
-            <div class="flex items-center gap-1.5">
-              <h1 class="text-lg font-extrabold tracking-tight text-white leading-none">Memo</h1>
-              <span class="px-1.5 py-0.5 text-[9.5px] font-extrabold rounded bg-memo-orange/20 text-memo-orange border border-memo-orange/30">MM</span>
-            </div>
-            <p class="text-[10.5px] text-gray-400 font-medium mt-0.5 leading-tight">Your Safe Space & Voice Hangout</p>
-          </div>
-        </div>
-
-        <!-- User Level & XP Pill -->
-        <button onclick="switchTab('profile')" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-memo-card border border-memo-purple/40 text-xs font-bold text-purple-300 shadow-[0_0_12px_rgba(139,92,246,0.2)] active:scale-95 transition">
-          <span class="w-1.5 h-1.5 rounded-full bg-memo-cyan animate-pulse"></span>
-          <span id="header-lv-text">Lv. 12</span>
-          <span class="text-[10px] text-gray-400" id="header-xp-text">740 XP</span>
-        </button>
-      </div>
-
-      <!-- Quick Mood / Vibe Bar -->
-      <div class="mt-2.5 flex items-center justify-between bg-memo-card border border-memo-border rounded-xl px-3 py-1.5">
-        <button onclick="openMoodModal()" class="flex items-center gap-2 text-left flex-1 min-w-0">
-          <span class="text-[11px] font-semibold text-gray-400 shrink-0">Vibe:</span>
-          <span id="current-mood-display" class="text-xs font-semibold text-white truncate">🎧 သီချင်းနားထောင်နေတယ်</span>
-        </button>
-        <button onclick="openMoodModal()" class="text-[11px] font-bold text-memo-orange hover:text-memo-orangeGlow shrink-0 ml-2 flex items-center gap-0.5">
-          <span>ပြောင်းမယ်</span>
-          <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
-        </button>
-      </div>
-    </header>
-
-    <!-- ==================== MINIMIZED FLOATING VOICE BAR ==================== -->
-    <div id="mini-voice-bar" onclick="reopenActiveRoom()" class="hidden shrink-0 bg-gradient-to-r from-memo-card via-[#231936] to-memo-card border-b border-memo-orange/50 px-4 py-2 flex items-center justify-between cursor-pointer z-20">
-      <div class="flex items-center gap-2.5 min-w-0">
-        <div class="flex items-end gap-0.5 h-4 shrink-0">
-          <span class="w-1 bg-memo-green rounded-full animate-wave"></span>
-          <span class="w-1 bg-memo-orange rounded-full animate-wave" style="animation-delay:0.2s"></span>
-          <span class="w-1 bg-memo-purple rounded-full animate-wave" style="animation-delay:0.4s"></span>
-        </div>
-        <div class="min-w-0">
-          <p id="mini-room-title" class="text-xs font-bold text-white truncate">🌙 ညဘက် မအိပ်သေးတဲ့သူများ</p>
-          <p class="text-[10px] text-memo-green font-semibold">VC Connected • ပြန်ဝင်ရန် နှိပ်ပါ</p>
+  <main class="container">
+    <section id="tab-feed">
+      <div class="card">
+        <label class="label">အခု ဘာတွေးနေလဲ / Post တင်မယ်</label>
+        <textarea id="post-input" placeholder="သူငယ်ချင်းတွေ မြင်ရအောင် Post တစ်ခု ရေးလိုက်ပါ..."></textarea>
+        <div class="row" style="justify-content: space-between;">
+          <span id="posting-as" class="handle"></span>
+          <button id="btn-post">Post တင်မည်</button>
         </div>
       </div>
-      <button onclick="event.stopPropagation(); leaveVoiceRoom()" class="px-2.5 py-1 rounded-lg bg-red-500/20 text-red-400 border border-red-500/30 text-[11px] font-bold">
-        Leave
-      </button>
-    </div>
+      <div id="feed-list" style="display:flex; flex-direction:column; gap:12px; margin-top:12px;"></div>
+    </section>
 
-    <!-- ==================== MAIN SCROLLABLE AREA ==================== -->
-    <main id="main-content" class="flex-1 overflow-y-auto no-scrollbar pb-24">
-
-      <!-- ==================== TAB 1: FEED ==================== -->
-      <section id="view-feed" class="px-4 pt-3 space-y-3.5">
-        <!-- Quick Photo/Memory Composer Prompt -->
-        <div onclick="openCreatePostModal()" class="cursor-pointer bg-memo-card hover:bg-memo-elevated/80 border border-memo-border rounded-2xl p-3 flex items-center gap-3 transition">
-          <div id="composer-avatar" class="w-10 h-10 rounded-full bg-memo-elevated flex items-center justify-center text-lg shrink-0 frame-orange">🦊</div>
-          <div class="flex-1 min-w-0">
-            <p class="text-xs text-gray-400 truncate">ဒီနေ့ ဘာတွေ ခံစားနေရလဲ? ပုံလေးတွေနဲ့ ရင်ဖွင့်မယ်...</p>
-          </div>
-          <div class="px-2.5 py-1.5 rounded-xl bg-memo-orange/15 text-memo-orange border border-memo-orange/30 flex items-center gap-1 text-xs font-bold shrink-0">
-            <i data-lucide="image-plus" class="w-4 h-4"></i>
-            <span>ပုံတင်မယ်</span>
-          </div>
+    <section id="tab-chat" class="hidden">
+      <div class="card">
+        <div style="font-weight:700; margin-bottom:8px;">Global Lounge Chat (အားလုံး စကားပြောခန်း)</div>
+        <div id="chat-list" class="chat-box"></div>
+        <div class="row">
+          <input id="chat-input" type="text" placeholder="စာတစ်စောင် ရိုက်ထည့်ပါ..." />
+          <button id="btn-send-chat">ပို့မည်</button>
         </div>
+      </div>
+    </section>
 
-        <!-- Category Filter Pills -->
-        <div id="feed-filters" class="flex gap-2 overflow-x-auto no-scrollbar py-0.5">
-          <!-- Rendered by JS -->
-        </div>
-
-        <!-- Community Posts Feed -->
-        <div id="feed-posts-container" class="space-y-3.5">
-          <!-- Rendered by JS -->
-        </div>
-      </section>
-
-      <!-- ==================== TAB 2: VOICE HANGOUTS & PUBLIC SQUADS ==================== -->
-      <section id="view-rooms" class="hidden px-4 pt-3 space-y-4">
-        <!-- Section A: Public Squads / Groups with VC LIVE or Offline status -->
+    <section id="tab-profile" class="hidden">
+      <div class="card" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="font-weight:700; font-size:16px;">Profile Settings</div>
         <div>
-          <div class="flex items-center justify-between mb-2.5">
-            <div>
-              <h2 class="text-sm font-extrabold text-white flex items-center gap-1.5">
-                <span>Public Squads & Groups</span>
-                <span class="px-1.5 py-0.5 text-[10px] rounded bg-memo-purple/20 text-purple-300 border border-memo-purple/30">Community</span>
-              </h2>
-              <p class="text-[11px] text-gray-400">အဖွဲ့လိုက် စုစည်းပြီး VC ဖွင့်ထားတဲ့ အဖွဲ့များ</p>
-            </div>
-            <button onclick="openCreateGroupModal()" class="px-2.5 py-1.5 rounded-xl bg-memo-elevated hover:bg-memo-border border border-memo-purple/40 text-purple-300 text-xs font-bold flex items-center gap-1 active:scale-95 transition">
-              <i data-lucide="users" class="w-3.5 h-3.5"></i>
-              <span>GP ဖွဲ့မယ်</span>
-            </button>
-          </div>
-
-          <div id="public-groups-list" class="grid grid-cols-1 gap-2.5">
-            <!-- Rendered by JS -->
-          </div>
+          <label class="label">Display Name</label>
+          <input id="prof-name" type="text" placeholder="နာမည်" />
         </div>
-
-        <!-- Section B: Active Live Voice Rooms -->
-        <div class="pt-1 border-t border-memo-border/70">
-          <div class="flex items-center justify-between mb-2.5">
-            <div>
-              <h2 class="text-sm font-extrabold text-white">Active Voice Rooms 🎙️</h2>
-              <p class="text-[11px] text-gray-400">လက်ရှိ စကားပြောနေကြသော အခန်းများ</p>
-            </div>
-            <button onclick="openCreateRoomModal()" class="px-3 py-1.5 rounded-xl bg-memo-orange text-white text-xs font-bold shadow-[0_0_15px_rgba(255,107,0,0.4)] flex items-center gap-1 active:scale-95 transition">
-              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-              <span>VC ဖွင့်မယ်</span>
-            </button>
-          </div>
-
-          <div id="voice-rooms-list" class="space-y-3">
-            <!-- Rendered by JS -->
-          </div>
-        </div>
-      </section>
-
-      <!-- ==================== TAB 3: CHATS & @USERNAME SEARCH ==================== -->
-      <section id="view-chats" class="hidden px-4 pt-3 space-y-4">
-        <!-- @username Search Input -->
-        <div class="relative">
-          <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-          <input id="friend-search-input" oninput="renderChatsView()" type="text" placeholder="သူငယ်ချင်း ရှာရန် (ဥပမာ - @kyawkyaw123 သို့မဟုတ် နာမည်)..." class="w-full bg-memo-card border border-memo-border rounded-2xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-memo-orange">
-        </div>
-
-        <!-- Online Friends Horizontal Strip -->
         <div>
-          <h3 class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2.5">Online Friends (စကားပြောလို့ရနေသူများ)</h3>
-          <div id="online-friends-strip" class="flex gap-3 overflow-x-auto no-scrollbar pb-1">
-            <!-- Rendered by JS -->
-          </div>
+          <label class="label">@Username</label>
+          <input id="prof-handle" type="text" placeholder="username" />
         </div>
-
-        <!-- Direct Messages List -->
         <div>
-          <div class="flex items-center justify-between mb-2">
-            <h3 class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Direct Messages</h3>
-            <span class="text-[10.5px] text-memo-cyan font-semibold">Safe & Private</span>
-          </div>
-          <div id="dm-threads-list" class="space-y-2">
-            <!-- Rendered by JS -->
-          </div>
+          <label class="label">Bio</label>
+          <textarea id="prof-bio" placeholder="ကိုယ့်အကြောင်း အကျဉ်းချုပ်..."></textarea>
         </div>
-      </section>
-
-      <!-- ==================== TAB 4: PROFILE (BIO, @USERNAME, NEON FRAMES) ==================== -->
-      <section id="view-profile" class="hidden px-4 pt-3.5 space-y-4">
-        <!-- Main Profile Card -->
-        <div class="relative bg-memo-card border border-memo-border rounded-3xl p-5 overflow-hidden">
-          <div class="absolute -top-12 -right-12 w-36 h-36 bg-memo-orange/15 rounded-full blur-2xl pointer-events-none"></div>
-          <div class="absolute -bottom-12 -left-12 w-36 h-36 bg-memo-purple/15 rounded-full blur-2xl pointer-events-none"></div>
-
-          <div class="flex items-start justify-between gap-3">
-            <div class="flex items-center gap-3.5 min-w-0">
-              <div class="relative shrink-0">
-                <div id="profile-avatar-box" class="w-18 h-18 w-[72px] h-[72px] rounded-full bg-memo-elevated flex items-center justify-center text-3xl frame-orange transition-all">
-                  🦊
-                </div>
-                <span class="absolute bottom-0.5 right-0.5 w-4 h-4 rounded-full bg-memo-green border-2 border-memo-card"></span>
-              </div>
-              <div class="min-w-0">
-                <div class="flex items-center gap-1.5 flex-wrap">
-                  <h2 id="profile-display-name" class="text-base font-extrabold text-white truncate">Kyaw Kyaw</h2>
-                  <span id="profile-level-badge" class="px-2 py-0.5 rounded-md bg-gradient-to-r from-memo-orange to-amber-500 text-white text-[10px] font-extrabold">Lv. 12</span>
-                </div>
-                <p id="profile-username-text" class="text-xs font-semibold text-memo-orange mt-0.5">@kyawkyaw123</p>
-                <div id="profile-mood-pill" onclick="openMoodModal()" class="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-memo-elevated border border-memo-border text-[11px] text-gray-200 cursor-pointer">
-                  <span>🎧 သီချင်းနားထောင်နေတယ်</span>
-                </div>
-              </div>
-            </div>
-
-            <button onclick="openEditProfileModal()" class="px-3 py-1.5 rounded-xl bg-memo-elevated hover:bg-memo-border border border-memo-border text-xs font-bold text-white flex items-center gap-1 shrink-0 active:scale-95 transition">
-              <i data-lucide="edit-3" class="w-3.5 h-3.5 text-memo-orange"></i>
-              <span>Edit</span>
-            </button>
-          </div>
-
-          <!-- Editable Bio / Info Box -->
-          <div class="mt-4 p-3 rounded-2xl bg-memo-bg/80 border border-memo-border/90">
-            <div class="flex items-center justify-between mb-1">
-              <span class="text-[10.5px] font-bold text-gray-400 uppercase tracking-wider">Bio / Info</span>
-              <button onclick="openEditProfileModal()" class="text-[10.5px] font-semibold text-memo-orange hover:underline">ပြင်ဆင်မည်</button>
-            </div>
-            <p id="profile-bio-text" class="text-xs text-gray-200 leading-relaxed whitespace-pre-line">ညဘက် သီချင်းနားထောင်ရင်း စကားပြောရတာ ကြိုက်တယ်။ စိတ်ညစ်နေရင် လာရင်ဖွင့်လို့ရတယ်နော် 🌙🎧✨</p>
-          </div>
-
-          <!-- Omlet Style XP Progress Bar -->
-          <div class="mt-4">
-            <div class="flex justify-between text-[11px] font-semibold mb-1.5">
-              <span class="text-gray-400">Omlet Vibe Level</span>
-              <span class="text-memo-orange"><span id="profile-xp">740</span> / 1,000 XP</span>
-            </div>
-            <div class="w-full h-2.5 bg-memo-bg rounded-full overflow-hidden border border-memo-border">
-              <div id="profile-xp-bar" class="h-full bg-gradient-to-r from-memo-orange via-amber-400 to-memo-purple rounded-full transition-all duration-500" style="width: 74%"></div>
-            </div>
-          </div>
-
-          <!-- Stats Row -->
-          <div class="grid grid-cols-3 gap-2 mt-4 pt-3.5 border-t border-memo-border text-center">
-            <div>
-              <p class="text-sm font-extrabold text-white">48</p>
-              <p class="text-[10.5px] text-gray-400">Friends</p>
-            </div>
-            <div>
-              <p id="profile-posts-count" class="text-sm font-extrabold text-white">1</p>
-              <p class="text-[10.5px] text-gray-400">My Posts</p>
-            </div>
-            <div>
-              <p class="text-sm font-extrabold text-memo-cyan">32.5h</p>
-              <p class="text-[10.5px] text-gray-400">Voice Time</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Neon Avatar Frame Selector -->
-        <div class="bg-memo-card border border-memo-border rounded-2xl p-4">
-          <div class="flex items-center justify-between mb-3">
-            <h3 class="text-xs font-bold text-white uppercase tracking-wider">✨ Neon Avatar Frames</h3>
-            <span class="text-[10.5px] text-memo-orange font-semibold">Omlet Style</span>
-          </div>
-          <div class="grid grid-cols-4 gap-2">
-            <button onclick="selectAvatarFrame('frame-orange', this)" class="frame-option p-2 rounded-xl bg-memo-elevated border-2 border-memo-orange flex flex-col items-center gap-1.5">
-              <div class="w-8 h-8 rounded-full bg-memo-card flex items-center justify-center text-sm frame-orange user-avatar-preview">🦊</div>
-              <span class="text-[10px] font-bold text-white">Flame</span>
-            </button>
-            <button onclick="selectAvatarFrame('frame-purple', this)" class="frame-option p-2 rounded-xl bg-memo-elevated border border-memo-border flex flex-col items-center gap-1.5">
-              <div class="w-8 h-8 rounded-full bg-memo-card flex items-center justify-center text-sm frame-purple user-avatar-preview">🦊</div>
-              <span class="text-[10px] font-bold text-gray-300">Purple</span>
-            </button>
-            <button onclick="selectAvatarFrame('frame-cyan', this)" class="frame-option p-2 rounded-xl bg-memo-elevated border border-memo-border flex flex-col items-center gap-1.5">
-              <div class="w-8 h-8 rounded-full bg-memo-card flex items-center justify-center text-sm frame-cyan user-avatar-preview">🦊</div>
-              <span class="text-[10px] font-bold text-gray-300">Emerald</span>
-            </button>
-            <button onclick="selectAvatarFrame('frame-rose', this)" class="frame-option p-2 rounded-xl bg-memo-elevated border border-memo-border flex flex-col items-center gap-1.5">
-              <div class="w-8 h-8 rounded-full bg-memo-card flex items-center justify-center text-sm frame-rose user-avatar-preview">🦊</div>
-              <span class="text-[10px] font-bold text-gray-300">Rose</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Achievement Badges -->
-        <div class="bg-memo-card border border-memo-border rounded-2xl p-4">
-          <h3 class="text-xs font-bold text-white uppercase tracking-wider mb-3">🏅 Achievement Badges</h3>
-          <div class="grid grid-cols-3 gap-2.5">
-            <div class="p-2.5 rounded-xl bg-memo-elevated/80 border border-memo-border text-center">
-              <div class="text-2xl mb-1">🦉</div>
-              <p class="text-[11px] font-bold text-white">Night Owl</p>
-              <p class="text-[9.5px] text-gray-400">ည ၁၂ ကျော်ထိ စကားပြောသူ</p>
-            </div>
-            <div class="p-2.5 rounded-xl bg-memo-elevated/80 border border-memo-border text-center">
-              <div class="text-2xl mb-1">🎧</div>
-              <p class="text-[11px] font-bold text-white">Good Listener</p>
-              <p class="text-[9.5px] text-gray-400">နွေးထွေးစွာ နားထောင်ပေးသူ</p>
-            </div>
-            <div class="p-2.5 rounded-xl bg-memo-elevated/80 border border-memo-border text-center">
-              <div class="text-2xl mb-1">🛡️</div>
-              <p class="text-[11px] font-bold text-white">Safe Helper</p>
-              <p class="text-[9.5px] text-gray-400">Safe Space ထိန်းသိမ်းသူ</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- User's Own Posts History -->
-        <div class="space-y-2.5">
-          <h3 class="text-xs font-bold text-white uppercase tracking-wider px-1">📸 My Memories (ကျွန်ုပ်တင်ထားသော ပို့စ်များ)</h3>
-          <div id="user-own-posts-list" class="space-y-3">
-            <!-- Rendered by JS -->
-          </div>
-        </div>
-      </section>
-
-    </main>
-
-    <!-- ==================== BOTTOM NAVIGATION BAR ==================== -->
-    <nav class="shrink-0 h-[72px] bg-memo-card/95 backdrop-blur-lg border-t border-memo-border px-2 flex items-center justify-around relative z-30">
-      <button onclick="switchTab('feed')" data-tab="feed" class="nav-btn flex flex-col items-center justify-center w-16 py-1 text-memo-orange transition">
-        <i data-lucide="flame" class="w-5 h-5"></i>
-        <span class="text-[10.5px] font-bold mt-1">Feed</span>
-      </button>
-
-      <button onclick="switchTab('rooms')" data-tab="rooms" class="nav-btn flex flex-col items-center justify-center w-16 py-1 text-gray-400 hover:text-gray-200 transition">
-        <div class="relative">
-          <i data-lucide="mic" class="w-5 h-5"></i>
-          <span class="absolute -top-0.5 -right-1 w-2 h-2 rounded-full bg-memo-green"></span>
-        </div>
-        <span class="text-[10.5px] font-semibold mt-1">Voice</span>
-      </button>
-
-      <!-- Omlet Arcade Signature Center Floating '+' Action Button -->
-      <div class="relative -top-5 flex flex-col items-center">
-        <button onclick="toggleActionMenu()" aria-label="Create" class="omlet-fab w-14 h-14 rounded-full flex items-center justify-center text-white transition-transform duration-200">
-          <i id="fab-icon" data-lucide="plus" class="w-7 h-7 stroke-[2.8] transition-transform duration-200"></i>
-        </button>
+        <button id="btn-save-profile">Profile သိမ်းမည်</button>
       </div>
+    </section>
+  </main>
 
-      <button onclick="switchTab('chats')" data-tab="chats" class="nav-btn flex flex-col items-center justify-center w-16 py-1 text-gray-400 hover:text-gray-200 transition">
-        <div class="relative">
-          <i data-lucide="message-circle" class="w-5 h-5"></i>
-          <span id="chat-unread-dot" class="absolute -top-0.5 -right-1 w-2 h-2 rounded-full bg-memo-orange"></span>
-        </div>
-        <span class="text-[10.5px] font-semibold mt-1">Chats</span>
-      </button>
+  <nav class="nav">
+    <button id="nav-feed" class="active">Feed</button>
+    <button id="nav-chat">Chat</button>
+    <button id="nav-profile">Profile</button>
+  </nav>
 
-      <button onclick="switchTab('profile')" data-tab="profile" class="nav-btn flex flex-col items-center justify-center w-16 py-1 text-gray-400 hover:text-gray-200 transition">
-        <i data-lucide="user" class="w-5 h-5"></i>
-        <span class="text-[10.5px] font-semibold mt-1">Profile</span>
-      </button>
-    </nav>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getDatabase, ref, push, set, onValue, update } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
-    <!-- ==================== OVERLAYS & MODALS ==================== -->
-
-    <!-- 1. Center '+' Action Sheet Menu -->
-    <div id="action-menu-overlay" onclick="toggleActionMenu(false)" class="hidden absolute inset-0 bg-black/75 backdrop-blur-xs z-40 flex items-end justify-center pb-24 px-4">
-      <div onclick="event.stopPropagation()" class="w-full bg-memo-card border border-memo-border rounded-3xl p-4 shadow-2xl space-y-2.5 animate-slide-up">
-        <p class="text-center text-xs font-bold text-gray-400 uppercase tracking-wider pb-1">ဘာဖန်တီးမလဲ?</p>
-
-        <button onclick="toggleActionMenu(false); openCreatePostModal()" class="w-full p-3 rounded-2xl bg-memo-elevated hover:bg-memo-border/70 border border-memo-border flex items-center gap-3.5 text-left transition">
-          <div class="w-10 h-10 rounded-xl bg-memo-orange/20 text-memo-orange flex items-center justify-center shrink-0">
-            <i data-lucide="image-plus" class="w-5 h-5"></i>
-          </div>
-          <div>
-            <p class="text-sm font-bold text-white">Create Post (ပုံနှင့် စာတင်မယ်)</p>
-            <p class="text-[11px] text-gray-400">ဓာတ်ပုံတင်မယ် • Anonymous တင်လို့ရသည်</p>
-          </div>
-        </button>
-
-        <button onclick="toggleActionMenu(false); openCreateRoomModal()" class="w-full p-3 rounded-2xl bg-memo-elevated hover:bg-memo-border/70 border border-memo-border flex items-center gap-3.5 text-left transition">
-          <div class="w-10 h-10 rounded-xl bg-memo-green/20 text-memo-green flex items-center justify-center shrink-0">
-            <i data-lucide="radio" class="w-5 h-5"></i>
-          </div>
-          <div>
-            <p class="text-sm font-bold text-white">Start Voice Room (VC ဖွင့်မယ်)</p>
-            <p class="text-[11px] text-gray-400">သူငယ်ချင်းတွေခေါ်ပြီး Live စကားပြောမယ်</p>
-          </div>
-        </button>
-
-        <button onclick="toggleActionMenu(false); openCreateGroupModal()" class="w-full p-3 rounded-2xl bg-memo-elevated hover:bg-memo-border/70 border border-memo-border flex items-center gap-3.5 text-left transition">
-          <div class="w-10 h-10 rounded-xl bg-memo-purple/20 text-purple-400 flex items-center justify-center shrink-0">
-            <i data-lucide="users" class="w-5 h-5"></i>
-          </div>
-          <div>
-            <p class="text-sm font-bold text-white">Create Public Squad / GP (အဖွဲ့ဖွဲ့မယ်)</p>
-            <p class="text-[11px] text-gray-400">Public မှာ ကိုယ်ပိုင် Group ထောင်ပြီး VC ဖွင့်မယ်</p>
-          </div>
-        </button>
-      </div>
-    </div>
-
-    <!-- 2. Mood Picker Modal -->
-    <div id="mood-modal" onclick="closeMoodModal()" class="hidden absolute inset-0 bg-black/75 backdrop-blur-xs z-50 flex items-end justify-center p-4">
-      <div onclick="event.stopPropagation()" class="w-full bg-memo-card border border-memo-border rounded-3xl p-5 space-y-3 animate-slide-up">
-        <div class="flex items-center justify-between">
-          <h3 class="text-base font-extrabold text-white">ဒီနေ့ စိတ်ခံစားချက် (Vibe)</h3>
-          <button onclick="closeMoodModal()" class="p-1.5 rounded-full bg-memo-elevated text-gray-400 hover:text-white">
-            <i data-lucide="x" class="w-4 h-4"></i>
-          </button>
-        </div>
-        <div id="mood-options-list" class="grid grid-cols-1 gap-2">
-          <!-- Rendered by JS -->
-        </div>
-      </div>
-    </div>
-
-    <!-- 3. Create Post Modal (With Phone Image Upload & Presets + Anonymous Toggle) -->
-    <div id="create-post-modal" onclick="closeCreatePostModal()" class="hidden absolute inset-0 bg-black/80 backdrop-blur-xs z-50 flex items-end justify-center">
-      <div onclick="event.stopPropagation()" class="w-full max-h-[90%] overflow-y-auto no-scrollbar bg-memo-card border-t border-memo-border rounded-t-3xl p-5 space-y-3.5 animate-slide-up">
-        <div class="flex items-center justify-between">
-          <h3 class="text-base font-extrabold text-white">Memory အသစ်တင်မယ် ✍️</h3>
-          <button onclick="closeCreatePostModal()" class="p-1.5 rounded-full bg-memo-elevated text-gray-400">
-            <i data-lucide="x" class="w-4 h-4"></i>
-          </button>
-        </div>
-
-        <!-- Anonymous Toggle -->
-        <div class="flex items-center justify-between p-3 rounded-2xl bg-memo-elevated border border-memo-border">
-          <div class="flex items-center gap-2.5">
-            <span class="text-xl">🎭</span>
-            <div>
-              <p class="text-xs font-bold text-white">Anonymous Mode (အမည်ဝှက်)</p>
-              <p class="text-[10.5px] text-gray-400">နာမည်နှင့် @username မဖော်ဘဲ ရင်ဖွင့်မယ်</p>
-            </div>
-          </div>
-          <label class="relative inline-flex items-center cursor-pointer">
-            <input id="post-anon-toggle" type="checkbox" class="sr-only peer">
-            <div class="w-10 h-5 bg-gray-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-memo-purple"></div>
-          </label>
-        </div>
-
-        <!-- Tag Selector -->
-        <div>
-          <label class="text-xs font-semibold text-gray-400 block mb-1.5">Tag ရွေးပါ</label>
-          <div id="create-post-tags" class="flex flex-wrap gap-1.5">
-            <!-- Rendered by JS -->
-          </div>
-        </div>
-
-        <!-- Post Textarea -->
-        <textarea id="post-content-input" rows="3" placeholder="ဒီနေ့ ဘာတွေ ခံစားနေရလဲ... ရင်ဖွင့်ခဲ့လို့ရတယ်နော်..." class="w-full bg-memo-bg border border-memo-border rounded-2xl p-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-memo-orange resize-none"></textarea>
-
-        <!-- Image Upload & Preset Aesthetic Vibes -->
-        <div class="space-y-2">
-          <div class="flex items-center justify-between">
-            <label class="text-xs font-semibold text-gray-400">ဓာတ်ပုံ ထည့်မယ် (Optional)</label>
-            <label for="post-file-input" class="cursor-pointer px-3 py-1 rounded-xl bg-memo-elevated hover:bg-memo-border border border-memo-orange/40 text-memo-orange text-xs font-bold flex items-center gap-1.5">
-              <i data-lucide="upload" class="w-3.5 h-3.5"></i>
-              <span>ဖုန်းထဲမှ ပုံရွေးမယ်</span>
-            </label>
-            <input id="post-file-input" type="file" accept="image/*" onchange="handleImageFileUpload(event)" class="hidden">
-          </div>
-
-          <!-- Quick Aesthetic Preset Images -->
-          <div>
-            <p class="text-[10.5px] text-gray-500 mb-1.5">သို့မဟုတ် အသင့်သုံး Aesthetic ပုံလေးများ ရွေးပါ-</p>
-            <div id="preset-images-row" class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-              <!-- Rendered by JS -->
-            </div>
-          </div>
-
-          <!-- Selected Image Preview -->
-          <div id="new-post-image-preview-wrap" class="hidden relative rounded-2xl overflow-hidden border border-memo-border bg-memo-bg">
-            <img id="new-post-image-preview" src="" alt="Preview" class="w-full h-44 object-cover">
-            <button type="button" onclick="clearSelectedPostImage()" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/75 text-white flex items-center justify-center hover:bg-red-500 transition">
-              <i data-lucide="x" class="w-4 h-4"></i>
-            </button>
-          </div>
-        </div>
-
-        <button onclick="submitNewPost()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-memo-orange to-amber-500 text-white font-bold text-sm shadow-[0_0_20px_rgba(255,107,0,0.4)] active:scale-[0.98] transition">
-          Post တင်မယ် (+25 XP)
-        </button>
-      </div>
-    </div>
-
-    <!-- 4. Create Voice Room Modal -->
-    <div id="create-room-modal" onclick="closeCreateRoomModal()" class="hidden absolute inset-0 bg-black/80 backdrop-blur-xs z-50 flex items-end justify-center">
-      <div onclick="event.stopPropagation()" class="w-full bg-memo-card border-t border-memo-border rounded-t-3xl p-5 space-y-4 animate-slide-up">
-        <div class="flex items-center justify-between">
-          <h3 class="text-base font-extrabold text-white">Voice Room အသစ်ဖွင့်မယ် 🎙️</h3>
-          <button onclick="closeCreateRoomModal()" class="p-1.5 rounded-full bg-memo-elevated text-gray-400">
-            <i data-lucide="x" class="w-4 h-4"></i>
-          </button>
-        </div>
-
-        <div>
-          <label class="text-xs font-semibold text-gray-400 block mb-1.5">အခန်းနာမည် (Room Title)</label>
-          <input id="new-room-title" type="text" placeholder="ဥပမာ - 🌙 ညဘက် မအိပ်သေးတဲ့သူများ စကားပြောခန်း" class="w-full bg-memo-bg border border-memo-border rounded-2xl px-3.5 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-memo-orange">
-        </div>
-
-        <div>
-          <label class="text-xs font-semibold text-gray-400 block mb-1.5">Topic Tag ရွေးပါ</label>
-          <div id="new-room-vibes" class="flex flex-wrap gap-2">
-            <!-- Rendered by JS -->
-          </div>
-        </div>
-
-        <button onclick="submitNewRoom()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-memo-orange to-memo-purple text-white font-bold text-sm shadow-[0_0_20px_rgba(255,107,0,0.4)] active:scale-[0.98] transition">
-          အခုပဲ Room စဖွင့်မယ် (+40 XP)
-        </button>
-      </div>
-    </div>
-
-    <!-- 5. Create Public Squad / Group Modal -->
-    <div id="create-group-modal" onclick="closeCreateGroupModal()" class="hidden absolute inset-0 bg-black/80 backdrop-blur-xs z-50 flex items-end justify-center">
-      <div onclick="event.stopPropagation()" class="w-full bg-memo-card border-t border-memo-border rounded-t-3xl p-5 space-y-4 animate-slide-up">
-        <div class="flex items-center justify-between">
-          <h3 class="text-base font-extrabold text-white">Public Squad / GP အသစ်ဖွဲ့မယ် 👥</h3>
-          <button onclick="closeCreateGroupModal()" class="p-1.5 rounded-full bg-memo-elevated text-gray-400">
-            <i data-lucide="x" class="w-4 h-4"></i>
-          </button>
-        </div>
-
-        <div>
-          <label class="text-xs font-semibold text-gray-400 block mb-1.5">အဖွဲ့နာမည် (Group Name)</label>
-          <input id="new-group-name" type="text" placeholder="ဥပမာ - Mandalay Night Owls 🦉" class="w-full bg-memo-bg border border-memo-border rounded-2xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-memo-purple">
-        </div>
-
-        <div>
-          <label class="text-xs font-semibold text-gray-400 block mb-1.5">အဖွဲ့အကြောင်း (Description)</label>
-          <input id="new-group-desc" type="text" placeholder="ဥပမာ - ညဘက် စကားပြောမယ် သီချင်းနားထောင်မယ်" class="w-full bg-memo-bg border border-memo-border rounded-2xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-memo-purple">
-        </div>
-
-        <div class="flex items-center justify-between p-3 rounded-2xl bg-memo-elevated border border-memo-border">
-          <div>
-            <p class="text-xs font-bold text-white">VC တစ်ခါတည်း ဖွင့်ထားမလား?</p>
-            <p class="text-[10.5px] text-gray-400">ဖွင့်ထားပါက Public တွင် VC LIVE ပြနေပါမည်</p>
-          </div>
-          <label class="relative inline-flex items-center cursor-pointer">
-            <input id="new-group-vc-toggle" type="checkbox" checked class="sr-only peer">
-            <div class="w-10 h-5 bg-gray-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-memo-green"></div>
-          </label>
-        </div>
-
-        <button onclick="submitNewGroup()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-memo-purple to-memo-orange text-white font-bold text-sm shadow-[0_0_20px_rgba(139,92,246,0.4)] active:scale-[0.98] transition">
-          Public Squad ဖွဲ့မယ် (+50 XP)
-        </button>
-      </div>
-    </div>
-
-    <!-- 6. Edit Profile & Bio Modal -->
-    <div id="edit-profile-modal" onclick="closeEditProfileModal()" class="hidden absolute inset-0 bg-black/80 backdrop-blur-xs z-50 flex items-end justify-center">
-      <div onclick="event.stopPropagation()" class="w-full bg-memo-card border-t border-memo-border rounded-t-3xl p-5 space-y-3.5 animate-slide-up">
-        <div class="flex items-center justify-between">
-          <h3 class="text-base font-extrabold text-white">Profile & Bio ပြင်ဆင်မယ် ✨</h3>
-          <button onclick="closeEditProfileModal()" class="p-1.5 rounded-full bg-memo-elevated text-gray-400">
-            <i data-lucide="x" class="w-4 h-4"></i>
-          </button>
-        </div>
-
-        <div>
-          <label class="text-xs font-semibold text-gray-400 block mb-1.5">Avatar Emoji ရွေးပါ</label>
-          <div id="edit-avatar-choices" class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-            <!-- Rendered by JS -->
-          </div>
-        </div>
-
-        <div>
-          <label class="text-xs font-semibold text-gray-400 block mb-1">Display Name (နာမည်)</label>
-          <input id="edit-display-name" type="text" class="w-full bg-memo-bg border border-memo-border rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-memo-orange">
-        </div>
-
-        <div>
-          <label class="text-xs font-semibold text-gray-400 block mb-1">Username (@username)</label>
-          <input id="edit-username" type="text" class="w-full bg-memo-bg border border-memo-border rounded-xl px-3.5 py-2.5 text-sm text-memo-orange font-semibold focus:outline-none focus:border-memo-orange">
-        </div>
-
-        <div>
-          <label class="text-xs font-semibold text-gray-400 block mb-1">Bio / Info (ကိုယ်ရေးသားချင်သော စာသား)</label>
-          <textarea id="edit-bio" rows="3" placeholder="ကိုယ့်အကြောင်းလေး ရေးထားခဲ့ပါ..." class="w-full bg-memo-bg border border-memo-border rounded-xl p-3 text-xs text-white focus:outline-none focus:border-memo-orange resize-none"></textarea>
-        </div>
-
-        <button onclick="saveProfileChanges()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-memo-orange to-amber-500 text-white font-bold text-sm shadow-[0_0_18px_rgba(255,107,0,0.4)] active:scale-[0.98] transition">
-          သိမ်းဆည်းမယ် (Save Changes)
-        </button>
-      </div>
-    </div>
-
-    <!-- 7. Comments Modal -->
-    <div id="comment-modal" onclick="closeCommentModal()" class="hidden absolute inset-0 bg-black/80 backdrop-blur-xs z-50 flex items-end justify-center">
-      <div onclick="event.stopPropagation()" class="w-full h-[72%] bg-memo-card border-t border-memo-border rounded-t-3xl flex flex-col overflow-hidden animate-slide-up">
-        <div class="px-5 py-3.5 border-b border-memo-border flex items-center justify-between shrink-0">
-          <h3 class="text-sm font-extrabold text-white">Comments (<span id="comment-modal-count">0</span>)</h3>
-          <button onclick="closeCommentModal()" class="p-1.5 rounded-full bg-memo-elevated text-gray-400">
-            <i data-lucide="x" class="w-4 h-4"></i>
-          </button>
-        </div>
-
-        <div id="comment-list" class="flex-1 overflow-y-auto no-scrollbar p-4 space-y-2.5">
-          <!-- Rendered by JS -->
-        </div>
-
-        <div class="p-3 bg-memo-bg border-t border-memo-border flex items-center gap-2 shrink-0">
-          <input id="comment-input" type="text" placeholder="နွေးထွေးတဲ့ မှတ်ချက်လေး ရေးပေးပါ..." class="flex-1 bg-memo-card border border-memo-border rounded-full px-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-memo-orange">
-          <button onclick="submitComment()" class="w-9 h-9 rounded-full bg-memo-orange text-white flex items-center justify-center shrink-0">
-            <i data-lucide="send" class="w-4 h-4"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 8. FULL-SCREEN LIVE VOICE ROOM DRAWER (Discord VC + Omlet Vibe) -->
-    <div id="live-room-screen" class="hidden absolute inset-0 bg-memo-bg z-50 flex flex-col">
-      <!-- Room Header -->
-      <div class="px-4 pt-4 pb-3 bg-memo-card border-b border-memo-border flex items-center justify-between shrink-0">
-        <button onclick="minimizeVoiceRoom()" class="p-2 rounded-xl bg-memo-elevated text-gray-300 hover:text-white" title="Minimize">
-          <i data-lucide="chevron-down" class="w-5 h-5"></i>
-        </button>
-        <div class="text-center flex-1 px-2 min-w-0">
-          <span id="active-room-tag" class="px-2 py-0.5 rounded-full bg-memo-orange/20 text-memo-orange text-[10px] font-bold">#NightChill</span>
-          <h3 id="active-room-title" class="text-sm font-extrabold text-white truncate mt-0.5">Room Title</h3>
-        </div>
-        <button onclick="leaveVoiceRoom()" class="px-3 py-1.5 rounded-xl bg-red-500/20 text-red-400 border border-red-500/30 text-xs font-bold">
-          ထွက်မယ်
-        </button>
-      </div>
-
-      <!-- Room Tools: Lo-fi Chill Audio & Ice-Breaker Card -->
-      <div class="px-4 pt-3 space-y-2.5 shrink-0">
-        <div class="flex gap-2">
-          <button id="lofi-toggle-btn" onclick="toggleLofiAudio()" class="flex-1 py-2 px-3 rounded-xl bg-memo-card border border-memo-border flex items-center justify-center gap-2 text-xs font-bold text-gray-300 transition">
-            <i data-lucide="music" class="w-4 h-4 text-memo-cyan"></i>
-            <span id="lofi-btn-text">Lo-fi Chill: OFF</span>
-          </button>
-
-          <button onclick="generateIceBreaker()" class="flex-1 py-2 px-3 rounded-xl bg-gradient-to-r from-memo-purple/30 to-memo-orange/30 border border-memo-purple/50 flex items-center justify-center gap-2 text-xs font-bold text-white active:scale-95 transition">
-            <span>🎲</span>
-            <span>Ice-Breaker Card</span>
-          </button>
-        </div>
-
-        <!-- Ice-Breaker Prompt Banner -->
-        <div id="ice-breaker-box" class="hidden p-3 rounded-2xl bg-gradient-to-r from-[#231934] to-[#2b1a14] border border-memo-orange/40">
-          <div class="flex items-center justify-between mb-1">
-            <span id="ice-breaker-type" class="text-[10px] font-extrabold uppercase tracking-wider text-memo-orange">🎲 TRUTH OR DARE</span>
-            <button onclick="document.getElementById('ice-breaker-box').classList.add('hidden')" class="text-gray-400 hover:text-white">
-              <i data-lucide="x" class="w-3.5 h-3.5"></i>
-            </button>
-          </div>
-          <p id="ice-breaker-text" class="text-xs font-medium text-white leading-relaxed"></p>
-        </div>
-      </div>
-
-      <!-- Speakers Grid (Shows Display Name + @username + Speaking Ring) -->
-      <div class="px-4 pt-3 pb-2 shrink-0">
-        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2.5">Speakers & Hangout Members</p>
-        <div id="active-room-speakers" class="grid grid-cols-3 gap-3">
-          <!-- Rendered by JS -->
-        </div>
-      </div>
-
-      <!-- Live Room Text Chat -->
-      <div class="flex-1 flex flex-col bg-memo-card/60 border-t border-memo-border mt-2 overflow-hidden">
-        <div class="px-4 py-2 border-b border-memo-border/60 flex items-center justify-between shrink-0">
-          <span class="text-[11px] font-bold text-gray-400">💬 Room Live Chat</span>
-          <span class="text-[10px] text-memo-green">Safe Space Rules Active</span>
-        </div>
-        <div id="room-chat-messages" class="flex-1 overflow-y-auto no-scrollbar px-4 py-2.5 space-y-2">
-          <!-- Rendered by JS -->
-        </div>
-        <div class="px-3 py-2 bg-memo-bg border-t border-memo-border flex items-center gap-2 shrink-0">
-          <input id="room-chat-input" type="text" placeholder="အခန်းထဲ စာပို့မယ်..." class="flex-1 bg-memo-card border border-memo-border rounded-full px-3.5 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-memo-orange">
-          <button onclick="sendRoomChat()" class="w-8 h-8 rounded-full bg-memo-orange text-white flex items-center justify-center shrink-0">
-            <i data-lucide="send" class="w-3.5 h-3.5"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- Bottom Voice Controls -->
-      <div class="px-5 py-3.5 bg-memo-card border-t border-memo-border flex items-center justify-around shrink-0">
-        <button id="mic-toggle-btn" onclick="toggleMic()" class="flex flex-col items-center gap-1 text-memo-green">
-          <div id="mic-icon-wrap" class="w-12 h-12 rounded-full bg-memo-green/20 border border-memo-green/50 flex items-center justify-center">
-            <i data-lucide="mic" class="w-5 h-5"></i>
-          </div>
-          <span id="mic-label" class="text-[10.5px] font-bold">Mic On</span>
-        </button>
-
-        <button id="raise-hand-btn" onclick="toggleRaiseHand()" class="flex flex-col items-center gap-1 text-gray-400">
-          <div class="w-12 h-12 rounded-full bg-memo-elevated border border-memo-border flex items-center justify-center">
-            <span class="text-lg">✋</span>
-          </div>
-          <span class="text-[10.5px] font-bold">လက်ထောင်မယ်</span>
-        </button>
-
-        <button onclick="sendRoomHeart()" class="flex flex-col items-center gap-1 text-memo-orange active:scale-90 transition">
-          <div class="w-12 h-12 rounded-full bg-memo-orange/20 border border-memo-orange/40 flex items-center justify-center">
-            <span class="text-lg">🧡</span>
-          </div>
-          <span class="text-[10.5px] font-bold">Vibe ပို့မယ်</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- 9. 1-on-1 DIRECT MESSAGE DRAWER -->
-    <div id="dm-screen" class="hidden absolute inset-0 bg-memo-bg z-50 flex flex-col">
-      <div class="px-4 py-3.5 bg-memo-card border-b border-memo-border flex items-center gap-3 shrink-0">
-        <button onclick="closeDmScreen()" class="p-1.5 rounded-xl bg-memo-elevated text-gray-300">
-          <i data-lucide="arrow-left" class="w-5 h-5"></i>
-        </button>
-        <div id="dm-peer-avatar" class="w-10 h-10 rounded-full bg-memo-elevated flex items-center justify-center text-lg frame-cyan">🐼</div>
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center gap-1.5">
-            <h3 id="dm-peer-name" class="text-sm font-extrabold text-white truncate">Su Myat</h3>
-            <span id="dm-peer-username" class="text-[11px] font-semibold text-memo-orange truncate">@su_myat</span>
-          </div>
-          <p id="dm-peer-mood" class="text-[11px] text-memo-green truncate">Online • ☕ Chill နေတယ်</p>
-        </div>
-      </div>
-
-      <div id="dm-messages-area" class="flex-1 overflow-y-auto no-scrollbar p-4 space-y-3">
-        <!-- Rendered by JS -->
-      </div>
-
-      <div class="p-3 bg-memo-card border-t border-memo-border flex items-center gap-2 shrink-0">
-        <input id="dm-input" type="text" placeholder="မက်ဆေ့ချ် ပို့မယ်..." class="flex-1 bg-memo-bg border border-memo-border rounded-full px-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-memo-orange">
-        <button onclick="sendDmMessage()" class="w-9 h-9 rounded-full bg-memo-orange text-white flex items-center justify-center shrink-0">
-          <i data-lucide="send" class="w-4 h-4"></i>
-        </button>
-      </div>
-    </div>
-
-    <!-- Toast Notification -->
-    <div id="toast-box" class="hidden absolute top-20 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-memo-elevated border border-memo-orange/60 text-xs font-bold text-white shadow-2xl z-50 whitespace-nowrap">
-    </div>
-
-  </div>
-
-  <script>
-    // ==================== SAFE SVG DATA URIS FOR PRESET AESTHETIC IMAGES ====================
-    function makeAestheticSvg(title, subtitle, c1, c2, emoji) {
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="340" viewBox="0 0 600 340">
-        <defs>
-          <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="${c1}"/>
-            <stop offset="100%" stop-color="${c2}"/>
-          </linearGradient>
-        </defs>
-        <rect width="600" height="340" fill="url(#g)"/>
-        <circle cx="480" cy="80" r="95" fill="#ffffff" fill-opacity="0.08"/>
-        <circle cx="110" cy="270" r="120" fill="#000000" fill-opacity="0.22"/>
-        <text x="300" y="145" font-size="56" text-anchor="middle">${emoji}</text>
-        <text x="300" y="205" font-family="sans-serif" font-size="24" font-weight="bold" fill="#ffffff" text-anchor="middle">${title}</text>
-        <text x="300" y="236" font-family="sans-serif" font-size="14" fill="#e5e7eb" fill-opacity="0.85" text-anchor="middle">${subtitle}</text>
-      </svg>`;
-      return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
-    }
-
-    const PRESET_IMAGES = [
-      {
-        label: '🌙 Midnight City',
-        url: makeAestheticSvg('Midnight Yangon Vibe', 'Late Night Chill & Safe Space', '#1e1b4b', '#ff6b00', '🌙')
-      },
-      {
-        label: '🌧️ Rainy Lo-Fi',
-        url: makeAestheticSvg('Rainy Night & Lo-Fi', 'Listening to calm beats together', '#0f172a', '#0ea5e9', '🌧️')
-      },
-      {
-        label: '☕ Coffee & Chill',
-        url: makeAestheticSvg('Warm Coffee & Talk', 'Take a deep breath, you are safe here', '#271a12', '#d97706', '☕')
-      },
-      {
-        label: '🎧 Neon Music',
-        url: makeAestheticSvg('Neon Soundwaves', 'Share your favorite song tonight', '#2e1065', '#ec4899', '🎧')
-      }
-    ];
-
-    // ==================== APPLICATION STATE ====================
-    const state = {
-      currentTab: 'feed',
-      activeFilter: 'All',
-      user: {
-        displayName: 'Kyaw Kyaw',
-        username: '@kyawkyaw123',
-        avatar: '🦊',
-        level: 12,
-        xp: 740,
-        frame: 'frame-orange',
-        mood: '🎧 သီချင်းနားထောင်နေတယ်',
-        bio: 'ညဘက် သီချင်းနားထောင်ရင်း စကားပြောရတာ ကြိုက်တယ်။ စိတ်ညစ်နေရင် လာရင်ဖွင့်လို့ရတယ်နော် 🌙🎧✨'
-      },
-      moods: [
-        '🎧 သီချင်းနားထောင်နေတယ်',
-        '🌙 အိပ်မပျော်ဘူး စကားပြောချင်တယ်',
-        '☕ အေးဆေး Chill နေတယ်',
-        '💔 ရင်ဖွင့်ချင်နေတယ်',
-        '🎮 ပျင်းနေတယ်'
-      ],
-      tags: ['#ရင်ဖွင့်မယ်', '#မိတ်ဆွေရှာမယ်', '#သီချင်း', '#Anonymous'],
-      selectedPostTag: '#ရင်ဖွင့်မယ်',
-      selectedPostImage: null,
-      selectedRoomVibe: '#NightChill',
-      posts: [
-        {
-          id: 1,
-          authorName: 'လျှို့ဝှက်လူငယ် #402',
-          username: '@anonymous',
-          avatar: '🎭',
-          frame: 'frame-purple',
-          level: 8,
-          isAnon: true,
-          tag: '#Anonymous',
-          mood: '💔 ရင်ဖွင့်ချင်နေတယ်',
-          time: '6m ago',
-          content: 'တစ်ခါတလေကျရင် အိမ်မှာရော ကျောင်းမှာရော အဆင်ပြေနေသလို ဟန်ဆောင်ရတာ အရမ်းပင်ပန်းတာပဲ။ ဒီ Memo ထဲမှာတော့ ကိုယ်တကယ်ခံစားနေရတာလေးတွေ လွတ်လွတ်လပ်လပ် ရေးခွင့်ရလို့ စိတ်သက်သာရာ ရတယ်။',
-          image: null,
-          likes: 38,
-          liked: false,
-          bookmarked: false,
-          comments: [
-            { authorName: 'Su Myat', username: '@su_myat', text: 'အားတင်းထားနော် မင်းတစ်ယောက်တည်း မဟုတ်ပါဘူး 🧡' },
-            { authorName: 'Min Khant', username: '@minkhant99', text: 'စကားပြောချင်ရင် Voice Room ထဲ ဝင်လာခဲ့လေ Bro' }
-          ]
-        },
-        {
-          id: 2,
-          authorName: 'Su Myat',
-          username: '@su_myat',
-          avatar: '🐼',
-          frame: 'frame-cyan',
-          level: 15,
-          isAnon: false,
-          tag: '#သီချင်း',
-          mood: '🎧 သီချင်းနားထောင်နေတယ်',
-          time: '20m ago',
-          content: 'မိုးအေးအေးလေးနဲ့ ညဘက် Lo-fi သီချင်းလေးတွေ နားထောင်ရင်း စကားစမြည်ပြောမယ့် သူငယ်ချင်းတွေ ရှိလား? 🌧️🎶 Music & Acoustic Squad ထဲမှာ VC ဖွင့်ထားတယ်နော်။',
-          image: PRESET_IMAGES[1].url,
-          likes: 64,
-          liked: true,
-          bookmarked: false,
-          comments: [
-            { authorName: 'Hnin Thiri', username: '@hnin_thiri', text: 'လာပြီနော်! ခဏနေ ဝင်ခဲ့မယ် 🎧' }
-          ]
-        },
-        {
-          id: 3,
-          authorName: 'Kyaw Kyaw',
-          username: '@kyawkyaw123',
-          avatar: '🦊',
-          frame: 'frame-orange',
-          level: 12,
-          isAnon: false,
-          tag: '#မိတ်ဆွေရှာမယ်',
-          mood: '🌙 အိပ်မပျော်ဘူး စကားပြောချင်တယ်',
-          time: '45m ago',
-          content: 'အရင် Omlet Arcade တုန်းကလို ညဘက်ဆို သူငယ်ချင်းတွေ စုပြီး စကားတွေ အများကြီးပြောခဲ့ရတဲ့ အချိန်လေးတွေကို အရမ်းသတိရတယ်။ အခု Memo မှာ သူငယ်ချင်းအသစ်တွေ ထပ်ဖွဲ့ကြမယ်! 🔥',
-          image: PRESET_IMAGES[0].url,
-          likes: 92,
-          liked: false,
-          bookmarked: true,
-          comments: [
-            { authorName: 'Min Khant', username: '@minkhant99', text: 'Welcome bro! NiteOwl Squad ထဲ လာခဲ့ဦး' }
-          ]
-        }
-      ],
-      publicGroups: [
-        {
-          id: 'g1',
-          name: 'NiteOwl Squad 🦉',
-          ownerName: 'Min Khant',
-          ownerUsername: '@minkhant99',
-          members: 142,
-          desc: 'ညဘက် မအိပ်သေးဘဲ စကားပြောကြမယ့် လူငယ်များစုဝေးရာ',
-          vcLive: true,
-          roomId: 'r1'
-        },
-        {
-          id: 'g2',
-          name: 'Music & Acoustic 🎸',
-          ownerName: 'Su Myat',
-          ownerUsername: '@su_myat',
-          members: 98,
-          desc: 'သီချင်းဆိုမယ်၊ Lo-fi နားထောင်မယ်၊ အေးဆေး Chill မယ်',
-          vcLive: true,
-          roomId: 'r2'
-        },
-        {
-          id: 'g3',
-          name: 'Lo-Fi Study & Chill ☕',
-          ownerName: 'Hnin Thiri',
-          ownerUsername: '@hnin_thiri',
-          members: 76,
-          desc: 'စာအတူကျက်မယ်၊ ညနေပိုင်းကျ စကားပြောမယ်',
-          vcLive: false,
-          roomId: null
-        },
-        {
-          id: 'g4',
-          name: 'Yangon Midnight Talk 🌙',
-          ownerName: 'Kyaw Kyaw',
-          ownerUsername: '@kyawkyaw123',
-          members: 64,
-          desc: 'ရင်ဖွင့်စရာရှိရင် အချိန်မရွေး လာပြောလို့ရတဲ့ Safe Group',
-          vcLive: false,
-          roomId: null,
-          isMine: true
-        }
-      ],
-      voiceRooms: [
-        {
-          id: 'r1',
-          title: '🌙 NiteOwl Squad — ညဘက် မအိပ်သေးတဲ့သူများ VC',
-          hostName: 'Min Khant',
-          hostUsername: '@minkhant99',
-          tag: '#NightChill',
-          listeners: 18,
-          speakers: [
-            { displayName: 'Min Khant', username: '@minkhant99', avatar: '🐺', speaking: true, host: true },
-            { displayName: 'Hnin Thiri', username: '@hnin_thiri', avatar: '🐰', speaking: false, host: false },
-            { displayName: 'Thura Zaw', username: '@thurazaw_mm', avatar: '🐯', speaking: true, host: false }
-          ],
-          messages: [
-            { authorName: 'Min Khant', username: '@minkhant99', text: 'အားလုံးပဲ မင်္ဂလာညချမ်းပါ 🌙' },
-            { authorName: 'Hnin Thiri', username: '@hnin_thiri', text: 'ဒီည မအိပ်သေးတဲ့သူတွေ လက်ထောင်ကြပါဦး ✋' }
-          ]
-        },
-        {
-          id: 'r2',
-          title: '🎸 Music & Acoustic — Lo-fi Chill Hangout',
-          hostName: 'Su Myat',
-          hostUsername: '@su_myat',
-          tag: '#MusicVibe',
-          listeners: 24,
-          speakers: [
-            { displayName: 'Su Myat', username: '@su_myat', avatar: '🐼', speaking: true, host: true },
-            { displayName: 'Aung Kaung', username: '@aungkaung22', avatar: '🐨', speaking: false, host: false }
-          ],
-          messages: [
-            { authorName: 'Su Myat', username: '@su_myat', text: 'Lo-fi သီချင်းလေး ဖွင့်ထားပေးတယ်နော် 🎧' }
-          ]
-        },
-        {
-          id: 'r3',
-          title: '💔 ရင်ဖွင့်ရာ & Safe Space Talk',
-          hostName: 'May Thu',
-          hostUsername: '@maythu_safe',
-          tag: '#SafeSpace',
-          listeners: 11,
-          speakers: [
-            { displayName: 'May Thu', username: '@maythu_safe', avatar: '🦋', speaking: true, host: true }
-          ],
-          messages: [
-            { authorName: 'May Thu', username: '@maythu_safe', text: 'ရင်ထဲရှိတာတွေ လွတ်လွတ်လပ်လပ် ပြောလို့ရပါတယ် 🧡' }
-          ]
-        }
-      ],
-      activeRoomId: null,
-      micOn: true,
-      handRaised: false,
-      lofiPlaying: false,
-      activeCommentPostId: null,
-      friends: [
-        { id: 'f1', displayName: 'Su Myat', username: '@su_myat', avatar: '🐼', frame: 'frame-cyan', mood: '☕ Chill နေတယ်', online: true, unread: 2, lastMsg: 'ညကျ Voice Room ထဲ လာခဲ့ဦးနော်!' },
-        { id: 'f2', displayName: 'Min Khant', username: '@minkhant99', avatar: '🐺', frame: 'frame-orange', mood: '🌙 အိပ်မပျော်ဘူး', online: true, unread: 0, lastMsg: 'Bro NiteOwl Squad ထဲ VC ဖွင့်ထားတယ်' },
-        { id: 'f3', displayName: 'Hnin Thiri', username: '@hnin_thiri', avatar: '🐰', frame: 'frame-purple', mood: '🎧 သီချင်းနားထောင်နေတယ်', online: true, unread: 1, lastMsg: 'ဒီသီချင်းလေး နားထောင်ကြည့်ပါဦး အရမ်းကောင်းတယ်' },
-        { id: 'f4', displayName: 'Thura Zaw', username: '@thurazaw_mm', avatar: '🐯', frame: 'frame-rose', mood: '🎮 ပျင်းနေတယ်', online: false, unread: 0, lastMsg: 'မနက်ဖြန်ကျ စကားပြောမယ်နော်' }
-      ],
-      dmHistory: {
-        f1: [
-          { from: 'them', text: 'ဟေး Kyaw Kyaw! Memo ထဲ ရောက်နေပြီလား 😄' },
-          { from: 'them', text: 'ညကျ Voice Room ထဲ လာခဲ့ဦးနော်!' }
-        ],
-        f2: [
-          { from: 'me', text: 'အေး Bro အခုပဲ ဝင်လာတာ' },
-          { from: 'them', text: 'Bro NiteOwl Squad ထဲ VC ဖွင့်ထားတယ်' }
-        ],
-        f3: [
-          { from: 'them', text: 'ဒီသီချင်းလေး နားထောင်ကြည့်ပါဦး အရမ်းကောင်းတယ်' }
-        ],
-        f4: [
-          { from: 'them', text: 'မနက်ဖြန်ကျ စကားပြောမယ်နော်' }
-        ]
-      },
-      activeDmFriendId: null,
-      iceBreakers: [
-        { type: '🎲 TRUTH (အမှန်တရား)', text: 'ဒီလထဲမှာ မင်းအပျော်ဆုံး ဖြစ်ခဲ့ရတဲ့ အခိုက်အတန့်လေးက ဘာလဲ?' },
-        { type: '🔥 DARE (စိန်ခေါ်မှု)', text: 'အခု Voice Room ထဲမှာ ကိုယ်အကြိုက်ဆုံး သီချင်းတစ်ပုဒ်ရဲ့ Chorus လေးကို ၅ စက္ကန့်လောက် ညည်းပြပါ! 🎶' },
-        { type: '💭 DEEP TALK', text: 'အရင်တုန်းက မင်းအရမ်းသတိရနေတဲ့ သူငယ်ချင်းတစ်ယောက်ကို ဒီနေရာကနေ စကားတစ်ခွန်း ပြောခွင့်ရရင် ဘာပြောမလဲ?' },
-        { type: '🎲 TRUTH (အမှန်တရား)', text: 'ညဘက် အိပ်မပျော်တဲ့အချိန်တွေဆို အများဆုံး ဘာတွေ တွေးနေတတ်လဲ?' },
-        { type: '⚡ QUICK VIBE', text: 'မိုးရွာတဲ့ည + ကော်ဖီပူပူ (သို့မဟုတ်) လသာတဲ့ည + လမ်းလျှောက်ထွက်ခြင်း — ဘယ်တစ်ခု ရွေးမလဲ?' }
-      ]
+    const firebaseConfig = {
+      apiKey: "AIzaSyDhEf2wFnYhAhf2YYYELl6ffM72kGaRUH0",
+      authDomain: "memo-app-1c08a.firebaseapp.com",
+      databaseURL: "https://memo-app-1c08a-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "memo-app-1c08a",
+      storageBucket: "memo-app-1c08a.firebasestorage.app",
+      messagingSenderId: "1012608684376",
+      appId: "1:1012608684376:web:15f4eeea82a6dfbd36552d"
     };
 
-    // ==================== SAFE WEB AUDIO API LO-FI SYNTH ====================
-    let audioCtx = null;
-    let lofiInterval = null;
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-    function toggleLofiAudio() {
-      state.lofiPlaying = !state.lofiPlaying;
-      const btn = document.getElementById('lofi-toggle-btn');
-      const txt = document.getElementById('lofi-btn-text');
-      if (!btn || !txt) return;
+    let uid = localStorage.getItem("memo_uid");
+    if (!uid) {
+      uid = "u_" + Math.random().toString(36).slice(2, 9);
+      localStorage.setItem("memo_uid", uid);
+    }
 
-      if (state.lofiPlaying) {
-        btn.classList.add('border-memo-cyan', 'bg-memo-cyan/15', 'text-memo-cyan');
-        txt.textContent = 'Lo-fi Chill: ON 🎶';
-        startChillSynth();
-        showToast('🎧 Lo-fi Chill Beat စတင်ဖွင့်လိုက်ပါပြီ');
+    let profile = JSON.parse(localStorage.getItem("memo_profile") || "null") || {
+      name: "Gogogo",
+      handle: "gogogo1027",
+      bio: "Memo member"
+    };
+
+    const statusEl = document.getElementById("conn-status");
+    const postingAsEl = document.getElementById("posting-as");
+    const profNameEl = document.getElementById("prof-name");
+    const profHandleEl = document.getElementById("prof-handle");
+    const profBioEl = document.getElementById("prof-bio");
+
+    function syncProfileUI() {
+      postingAsEl.textContent = `${profile.name} (@${profile.handle})`;
+      profNameEl.value = profile.name;
+      profHandleEl.value = profile.handle;
+      profBioEl.value = profile.bio;
+      localStorage.setItem("memo_profile", JSON.stringify(profile));
+      set(ref(db, `users/${uid}`), { ...profile, updatedAt: Date.now() }).catch(() => {});
+    }
+    syncProfileUI();
+
+    onValue(ref(db, ".info/connected"), (snap) => {
+      if (snap.val() === true) {
+        statusEl.textContent = "Live Connected";
+        statusEl.style.color = "#22c55e";
       } else {
-        btn.classList.remove('border-memo-cyan', 'bg-memo-cyan/15', 'text-memo-cyan');
-        txt.textContent = 'Lo-fi Chill: OFF';
-        stopChillSynth();
-      }
-    }
-
-    function startChillSynth() {
-      try {
-        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContextClass) return;
-        if (!audioCtx) {
-          audioCtx = new AudioContextClass();
-        }
-        if (audioCtx.state === 'suspended') {
-          audioCtx.resume().catch(() => {});
-        }
-
-        const chords = [
-          [261.63, 329.63, 392.00, 493.88],
-          [220.00, 261.63, 329.63, 392.00],
-          [174.61, 220.00, 261.63, 329.63],
-          [196.00, 246.94, 293.66, 329.63]
-        ];
-        let step = 0;
-
-        const playChord = () => {
-          if (!state.lofiPlaying || !audioCtx) return;
-          try {
-            const now = audioCtx.currentTime;
-            const freqs = chords[step % chords.length];
-            freqs.forEach((freq) => {
-              const osc = audioCtx.createOscillator();
-              const gain = audioCtx.createGain();
-              osc.type = 'sine';
-              osc.frequency.setValueAtTime(freq, now);
-              gain.gain.setValueAtTime(0.001, now);
-              gain.gain.exponentialRampToValueAtTime(0.022, now + 0.5);
-              gain.gain.exponentialRampToValueAtTime(0.0008, now + 3.0);
-              osc.connect(gain);
-              gain.connect(audioCtx.destination);
-              osc.start(now);
-              osc.stop(now + 3.1);
-            });
-            step++;
-          } catch (_) {}
-        };
-
-        playChord();
-        lofiInterval = setInterval(playChord, 3200);
-      } catch (_) {}
-    }
-
-    function stopChillSynth() {
-      if (lofiInterval) {
-        clearInterval(lofiInterval);
-        lofiInterval = null;
-      }
-    }
-
-    // ==================== NAVIGATION & TOAST ====================
-    function switchTab(tabName) {
-      state.currentTab = tabName;
-      ['feed', 'rooms', 'chats', 'profile'].forEach((t) => {
-        const sec = document.getElementById(`view-${t}`);
-        if (sec) sec.classList.toggle('hidden', t !== tabName);
-      });
-
-      document.querySelectorAll('.nav-btn').forEach((btn) => {
-        const active = btn.dataset.tab === tabName;
-        btn.classList.toggle('text-memo-orange', active);
-        btn.classList.toggle('text-gray-400', !active);
-      });
-
-      const main = document.getElementById('main-content');
-      if (main) main.scrollTop = 0;
-    }
-
-    function showToast(msg) {
-      const box = document.getElementById('toast-box');
-      if (!box) return;
-      box.textContent = msg;
-      box.classList.remove('hidden');
-      clearTimeout(box._timer);
-      box._timer = setTimeout(() => {
-        box.classList.add('hidden');
-      }, 2400);
-    }
-
-    function gainXp(amount) {
-      state.user.xp += amount;
-      if (state.user.xp >= 1000) {
-        state.user.level += 1;
-        state.user.xp -= 1000;
-        showToast(`🎉 Level Up! Lv. ${state.user.level} ရောက်ရှိသွားပါပြီ!`);
-      }
-      document.getElementById('header-lv-text').textContent = `Lv. ${state.user.level}`;
-      document.getElementById('header-xp-text').textContent = `${state.user.xp} XP`;
-      document.getElementById('profile-level-badge').textContent = `Lv. ${state.user.level}`;
-      document.getElementById('profile-xp').textContent = state.user.xp;
-      document.getElementById('profile-xp-bar').style.width = `${(state.user.xp / 1000) * 100}%`;
-    }
-
-    function escapeHtml(str) {
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-    }
-
-    // ==================== RENDER FEED & POSTS ====================
-    function renderFeedFilters() {
-      const filters = ['All', ...state.tags];
-      const container = document.getElementById('feed-filters');
-      container.innerHTML = filters.map((f) => {
-        const active = state.activeFilter === f;
-        return `
-          <button onclick="setFeedFilter('${f}')" class="shrink-0 px-3.5 py-1.5 rounded-full text-xs font-bold transition ${
-            active
-              ? 'bg-memo-orange text-white shadow-[0_0_12px_rgba(255,107,0,0.45)]'
-              : 'bg-memo-card text-gray-400 border border-memo-border hover:text-white'
-          }">${f}</button>
-        `;
-      }).join('');
-    }
-
-    function setFeedFilter(f) {
-      state.activeFilter = f;
-      renderFeedFilters();
-      renderPosts();
-    }
-
-    function buildPostCardHtml(post) {
-      return `
-        <article class="bg-memo-card border border-memo-border rounded-2xl p-4 space-y-3 transition">
-          <!-- Post Header -->
-          <div class="flex items-center justify-between gap-2">
-            <div class="flex items-center gap-2.5 min-w-0">
-              <div class="w-10 h-10 rounded-full bg-memo-elevated flex items-center justify-center text-lg shrink-0 ${post.frame}">
-                ${post.avatar}
-              </div>
-              <div class="min-w-0">
-                <div class="flex items-center gap-1.5 flex-wrap">
-                  <span class="text-sm font-bold text-white truncate">${escapeHtml(post.authorName)}</span>
-                  <span class="text-[11px] font-semibold ${post.isAnon ? 'text-purple-400' : 'text-memo-orange'} truncate">${escapeHtml(post.username)}</span>
-                  <span class="px-1.5 py-0.2 rounded bg-memo-elevated border border-memo-purple/40 text-[9.5px] font-bold text-purple-300">Lv.${post.level}</span>
-                </div>
-                <div class="flex items-center gap-1.5 text-[10.5px] text-gray-400 mt-0.5">
-                  <span class="truncate max-w-[160px]">${escapeHtml(post.mood)}</span>
-                  <span>•</span>
-                  <span class="shrink-0">${escapeHtml(post.time)}</span>
-                </div>
-              </div>
-            </div>
-            <span class="px-2.5 py-1 rounded-full bg-memo-elevated text-[10px] font-bold ${post.isAnon ? 'text-purple-400 border border-purple-500/30' : 'text-memo-orange'} shrink-0">
-              ${escapeHtml(post.tag)}
-            </span>
-          </div>
-
-          <!-- Post Text -->
-          <p class="text-[13.5px] text-gray-100 leading-relaxed whitespace-pre-line">${escapeHtml(post.content)}</p>
-
-          <!-- Optional Post Image -->
-          ${post.image ? `
-            <div class="rounded-2xl overflow-hidden border border-memo-border bg-memo-bg">
-              <img src="${post.image}" alt="Memory photo" class="w-full max-h-64 object-cover" onerror="this.style.display='none'">
-            </div>
-          ` : ''}
-
-          <!-- Post Actions -->
-          <div class="pt-2 border-t border-memo-border/70 flex items-center justify-between text-xs">
-            <div class="flex items-center gap-4">
-              <button onclick="toggleLike(${post.id})" class="flex items-center gap-1.5 font-bold transition ${post.liked ? 'text-memo-orange' : 'text-gray-400 hover:text-gray-200'}">
-                <i data-lucide="heart" class="w-4 h-4 ${post.liked ? 'fill-memo-orange' : ''}"></i>
-                <span>${post.likes}</span>
-              </button>
-
-              <button onclick="openCommentModal(${post.id})" class="flex items-center gap-1.5 font-bold text-gray-400 hover:text-gray-200 transition">
-                <i data-lucide="message-square" class="w-4 h-4"></i>
-                <span>${post.comments.length}</span>
-              </button>
-            </div>
-
-            <button onclick="toggleBookmark(${post.id})" class="p-1 text-gray-400 hover:text-memo-cyan transition">
-              <i data-lucide="bookmark" class="w-4 h-4 ${post.bookmarked ? 'fill-memo-cyan text-memo-cyan' : ''}"></i>
-            </button>
-          </div>
-        </article>
-      `;
-    }
-
-    function renderPosts() {
-      const container = document.getElementById('feed-posts-container');
-      const filtered = state.activeFilter === 'All'
-        ? state.posts
-        : state.posts.filter((p) => p.tag === state.activeFilter);
-
-      container.innerHTML = filtered.map(buildPostCardHtml).join('');
-      renderUserOwnPosts();
-      lucide.createIcons();
-    }
-
-    function renderUserOwnPosts() {
-      const myPosts = state.posts.filter((p) => !p.isAnon && p.username === state.user.username);
-      const countEl = document.getElementById('profile-posts-count');
-      if (countEl) countEl.textContent = myPosts.length;
-
-      const listEl = document.getElementById('user-own-posts-list');
-      if (!listEl) return;
-      if (myPosts.length === 0) {
-        listEl.innerHTML = `<p class="text-xs text-gray-500 text-center py-4 bg-memo-card rounded-2xl border border-memo-border">ပို့စ်မတင်ရသေးပါ</p>`;
-        return;
-      }
-      listEl.innerHTML = myPosts.map(buildPostCardHtml).join('');
-    }
-
-    function toggleLike(id) {
-      const post = state.posts.find((p) => p.id === id);
-      if (!post) return;
-      post.liked = !post.liked;
-      post.likes += post.liked ? 1 : -1;
-      if (post.liked) {
-        gainXp(5);
-        showToast('🧡 Liked (+5 XP)');
-      }
-      renderPosts();
-    }
-
-    function toggleBookmark(id) {
-      const post = state.posts.find((p) => p.id === id);
-      if (!post) return;
-      post.bookmarked = !post.bookmarked;
-      renderPosts();
-      showToast(post.bookmarked ? '🔖 Memory ကို သိမ်းဆည်းလိုက်ပါပြီ' : 'Bookmark ဖယ်ရှားလိုက်ပါပြီ');
-    }
-
-    // ==================== COMMENTS MODAL ====================
-    function openCommentModal(postId) {
-      state.activeCommentPostId = postId;
-      renderCommentsList();
-      document.getElementById('comment-modal').classList.remove('hidden');
-    }
-
-    function closeCommentModal() {
-      document.getElementById('comment-modal').classList.add('hidden');
-      state.activeCommentPostId = null;
-    }
-
-    function renderCommentsList() {
-      const post = state.posts.find((p) => p.id === state.activeCommentPostId);
-      if (!post) return;
-      document.getElementById('comment-modal-count').textContent = post.comments.length;
-      const list = document.getElementById('comment-list');
-      if (post.comments.length === 0) {
-        list.innerHTML = `<p class="text-center text-xs text-gray-500 py-8">ပထမဆုံး နွေးထွေးတဲ့ မှတ်ချက်လေး ပေးလိုက်ပါ 🧡</p>`;
-        return;
-      }
-      list.innerHTML = post.comments.map((c) => `
-        <div class="p-3 rounded-2xl bg-memo-elevated border border-memo-border">
-          <div class="flex items-center gap-1.5 mb-0.5">
-            <span class="text-xs font-bold text-white">${escapeHtml(c.authorName)}</span>
-            <span class="text-[10.5px] font-semibold text-memo-orange">${escapeHtml(c.username)}</span>
-          </div>
-          <p class="text-xs text-gray-200 leading-relaxed">${escapeHtml(c.text)}</p>
-        </div>
-      `).join('');
-    }
-
-    function submitComment() {
-      const input = document.getElementById('comment-input');
-      const text = input.value.trim();
-      if (!text || !state.activeCommentPostId) return;
-      const post = state.posts.find((p) => p.id === state.activeCommentPostId);
-      post.comments.push({
-        authorName: state.user.displayName,
-        username: state.user.username,
-        text
-      });
-      input.value = '';
-      gainXp(10);
-      renderCommentsList();
-      renderPosts();
-    }
-
-    // ==================== PUBLIC GROUPS & VOICE ROOMS ====================
-    function renderPublicGroups() {
-      const container = document.getElementById('public-groups-list');
-      container.innerHTML = state.publicGroups.map((gp) => {
-        const isMine = gp.ownerUsername === state.user.username || gp.isMine;
-        return `
-          <div class="bg-memo-card border ${gp.vcLive ? 'border-memo-green/40' : 'border-memo-border'} rounded-2xl p-3.5 space-y-2.5">
-            <div class="flex items-start justify-between gap-2">
-              <div class="min-w-0">
-                <div class="flex items-center gap-2 flex-wrap">
-                  <h3 class="text-sm font-extrabold text-white truncate">${escapeHtml(gp.name)}</h3>
-                  ${gp.vcLive
-                    ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-memo-green/20 border border-memo-green/40 text-memo-green text-[10px] font-extrabold">
-                        <span class="w-1.5 h-1.5 rounded-full bg-memo-green animate-ping"></span>VC LIVE
-                       </span>`
-                    : `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-800 border border-gray-700 text-gray-400 text-[10px] font-bold">
-                        Offline • VC မဖွင့်ထားပါ
-                       </span>`
-                  }
-                </div>
-                <p class="text-[11px] text-gray-400 mt-0.5">
-                  Lead: <span class="text-gray-200 font-semibold">${escapeHtml(gp.ownerName)}</span> <span class="text-memo-orange">${escapeHtml(gp.ownerUsername)}</span> • ${gp.members} Members
-                </p>
-              </div>
-            </div>
-
-            <p class="text-xs text-gray-300 leading-snug">${escapeHtml(gp.desc)}</p>
-
-            <div class="flex items-center justify-end gap-2 pt-1">
-              ${gp.vcLive
-                ? `<button onclick="joinGroupVc('${gp.id}')" class="px-3.5 py-1.5 rounded-xl bg-memo-green text-black text-xs font-extrabold shadow-[0_0_12px_rgba(34,197,94,0.4)] active:scale-95 transition">
-                    Join VC 🎙️
-                   </button>`
-                : isMine
-                  ? `<button onclick="startGroupVc('${gp.id}')" class="px-3 py-1.5 rounded-xl bg-memo-orange text-white text-xs font-bold active:scale-95 transition">
-                      Start VC ဖွင့်မယ်
-                     </button>`
-                  : `<span class="text-[11px] text-gray-500 font-medium">လက်ရှိ VC ပိတ်ထားပါသည်</span>`
-              }
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function joinGroupVc(groupId) {
-      const gp = state.publicGroups.find((g) => g.id === groupId);
-      if (!gp) return;
-      if (gp.roomId && state.voiceRooms.some((r) => r.id === gp.roomId)) {
-        joinVoiceRoom(gp.roomId);
-      } else {
-        startGroupVc(groupId);
-      }
-    }
-
-    function startGroupVc(groupId) {
-      const gp = state.publicGroups.find((g) => g.id === groupId);
-      if (!gp) return;
-      const newRoomId = 'r_gp_' + Date.now();
-      gp.vcLive = true;
-      gp.roomId = newRoomId;
-
-      state.voiceRooms.unshift({
-        id: newRoomId,
-        title: `${gp.name} — Live Squad Hangout`,
-        hostName: gp.ownerName,
-        hostUsername: gp.ownerUsername,
-        tag: '#SquadVC',
-        listeners: 1,
-        speakers: [
-          {
-            displayName: state.user.displayName,
-            username: state.user.username,
-            avatar: state.user.avatar,
-            speaking: true,
-            host: true
-          }
-        ],
-        messages: [
-          { authorName: 'Memo SafeBot', username: '@system', text: `${gp.name} ရဲ့ VC စတင်ဖွင့်လှစ်လိုက်ပါပြီ! 🎙️` }
-        ]
-      });
-
-      renderPublicGroups();
-      renderVoiceRoomsList();
-      joinVoiceRoom(newRoomId);
-    }
-
-    function renderVoiceRoomsList() {
-      const container = document.getElementById('voice-rooms-list');
-      container.innerHTML = state.voiceRooms.map((room) => `
-        <div onclick="joinVoiceRoom('${room.id}')" class="cursor-pointer bg-memo-card hover:bg-memo-elevated/80 border border-memo-border rounded-2xl p-4 transition space-y-3">
-          <div class="flex items-start justify-between gap-2">
-            <div class="min-w-0">
-              <div class="flex items-center gap-1.5 mb-1">
-                <span class="px-2 py-0.5 rounded-md bg-memo-purple/20 text-purple-300 text-[10px] font-bold">${escapeHtml(room.tag)}</span>
-                <span class="text-[10.5px] text-gray-400 truncate">Host: <span class="text-white font-semibold">${escapeHtml(room.hostName)}</span> <span class="text-memo-orange">${escapeHtml(room.hostUsername)}</span></span>
-              </div>
-              <h3 class="text-sm font-extrabold text-white leading-snug">${escapeHtml(room.title)}</h3>
-            </div>
-            <div class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-memo-green/15 border border-memo-green/30 text-memo-green text-xs font-bold shrink-0">
-              <i data-lucide="headphones" class="w-3.5 h-3.5"></i>
-              <span>${room.listeners}</span>
-            </div>
-          </div>
-
-          <div class="flex items-center justify-between pt-1">
-            <div class="flex items-center gap-2 min-w-0">
-              <div class="flex -space-x-2 shrink-0">
-                ${room.speakers.map((s) => `
-                  <div class="w-8 h-8 rounded-full bg-memo-elevated flex items-center justify-center text-sm border-2 border-memo-card ${s.speaking ? 'speaking-ring' : ''}">
-                    ${s.avatar}
-                  </div>
-                `).join('')}
-              </div>
-              <span class="text-[11px] text-gray-400 truncate">
-                ${room.speakers.map((s) => `${s.displayName} (${s.username})`).join(', ')}
-              </span>
-            </div>
-            <span class="px-3 py-1 rounded-xl bg-memo-orange/20 text-memo-orange text-xs font-bold shrink-0">Join →</span>
-          </div>
-        </div>
-      `).join('');
-      lucide.createIcons();
-    }
-
-    function joinVoiceRoom(roomId) {
-      state.activeRoomId = roomId;
-      state.micOn = true;
-      state.handRaised = false;
-      const room = state.voiceRooms.find((r) => r.id === roomId);
-      if (!room) return;
-
-      if (!room.speakers.some((s) => s.username === state.user.username)) {
-        room.speakers.push({
-          displayName: state.user.displayName,
-          username: state.user.username,
-          avatar: state.user.avatar,
-          speaking: true,
-          host: false
-        });
-        room.listeners += 1;
-      }
-
-      document.getElementById('mini-voice-bar').classList.add('hidden');
-      document.getElementById('live-room-screen').classList.remove('hidden');
-      renderActiveRoom();
-      gainXp(15);
-    }
-
-    function renderActiveRoom() {
-      const room = state.voiceRooms.find((r) => r.id === state.activeRoomId);
-      if (!room) return;
-
-      document.getElementById('active-room-tag').textContent = room.tag;
-      document.getElementById('active-room-title').textContent = room.title;
-
-      const speakersGrid = document.getElementById('active-room-speakers');
-      speakersGrid.innerHTML = room.speakers.map((s) => {
-        const isMe = s.username === state.user.username;
-        const isSpeaking = isMe ? state.micOn : s.speaking;
-        return `
-          <div class="flex flex-col items-center text-center bg-memo-card/80 border border-memo-border/70 rounded-2xl p-2">
-            <div class="relative w-13 h-13 w-12 h-12 rounded-full bg-memo-elevated flex items-center justify-center text-2xl ${isSpeaking ? 'speaking-ring' : 'border border-memo-border'}">
-              ${s.avatar}
-              ${s.host ? `<span class="absolute -top-1 -right-1 px-1.5 py-0.2 rounded bg-memo-orange text-[8px] font-extrabold text-white">HOST</span>` : ''}
-              ${isMe && !state.micOn ? `<span class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center text-[10px]">🔇</span>` : ''}
-              ${isMe && state.handRaised ? `<span class="absolute -top-1 -left-1 text-sm">✋</span>` : ''}
-            </div>
-            <p class="text-[11px] font-bold text-white truncate w-full mt-1.5">${escapeHtml(isMe ? state.user.displayName : s.displayName)}</p>
-            <p class="text-[9.5px] font-semibold text-memo-orange truncate w-full">${escapeHtml(isMe ? state.user.username : s.username)}</p>
-          </div>
-        `;
-      }).join('');
-
-      const chatBox = document.getElementById('room-chat-messages');
-      chatBox.innerHTML = room.messages.map((m) => `
-        <div class="text-xs leading-relaxed">
-          <span class="font-bold ${m.username === state.user.username ? 'text-memo-orange' : 'text-memo-cyan'}">${escapeHtml(m.authorName)}</span>
-          <span class="text-[10px] text-gray-400">(${escapeHtml(m.username)})</span>:
-          <span class="text-gray-200 ml-1">${escapeHtml(m.text)}</span>
-        </div>
-      `).join('');
-      chatBox.scrollTop = chatBox.scrollHeight;
-      lucide.createIcons();
-    }
-
-    function minimizeVoiceRoom() {
-      const room = state.voiceRooms.find((r) => r.id === state.activeRoomId);
-      if (!room) return;
-      document.getElementById('live-room-screen').classList.add('hidden');
-      document.getElementById('mini-room-title').textContent = room.title;
-      document.getElementById('mini-voice-bar').classList.remove('hidden');
-    }
-
-    function reopenActiveRoom() {
-      document.getElementById('mini-voice-bar').classList.add('hidden');
-      document.getElementById('live-room-screen').classList.remove('hidden');
-    }
-
-    function leaveVoiceRoom() {
-      const room = state.voiceRooms.find((r) => r.id === state.activeRoomId);
-      if (room) {
-        room.speakers = room.speakers.filter((s) => s.username !== state.user.username);
-        room.listeners = Math.max(1, room.listeners - 1);
-      }
-      state.activeRoomId = null;
-      if (state.lofiPlaying) toggleLofiAudio();
-      document.getElementById('live-room-screen').classList.add('hidden');
-      document.getElementById('mini-voice-bar').classList.add('hidden');
-      renderVoiceRoomsList();
-      showToast('Voice Room မှ ထွက်လိုက်ပါပြီ');
-    }
-
-    function toggleMic() {
-      state.micOn = !state.micOn;
-      const btn = document.getElementById('mic-toggle-btn');
-      const wrap = document.getElementById('mic-icon-wrap');
-      const label = document.getElementById('mic-label');
-
-      if (state.micOn) {
-        btn.className = 'flex flex-col items-center gap-1 text-memo-green';
-        wrap.className = 'w-12 h-12 rounded-full bg-memo-green/20 border border-memo-green/50 flex items-center justify-center';
-        label.textContent = 'Mic On';
-      } else {
-        btn.className = 'flex flex-col items-center gap-1 text-red-400';
-        wrap.className = 'w-12 h-12 rounded-full bg-red-500/20 border border-red-500/40 flex items-center justify-center';
-        label.textContent = 'Muted';
-      }
-      renderActiveRoom();
-    }
-
-    function toggleRaiseHand() {
-      state.handRaised = !state.handRaised;
-      const btn = document.getElementById('raise-hand-btn');
-      btn.classList.toggle('text-amber-400', state.handRaised);
-      btn.classList.toggle('text-gray-400', !state.handRaised);
-      renderActiveRoom();
-      if (state.handRaised) showToast('✋ စကားပြောခွင့် လက်ထောင်လိုက်ပါပြီ');
-    }
-
-    function sendRoomHeart() {
-      const room = state.voiceRooms.find((r) => r.id === state.activeRoomId);
-      if (!room) return;
-      room.messages.push({
-        authorName: state.user.displayName,
-        username: state.user.username,
-        text: '🧡✨ Good Vibes ပို့လိုက်ပါတယ်!'
-      });
-      renderActiveRoom();
-    }
-
-    function sendRoomChat() {
-      const input = document.getElementById('room-chat-input');
-      const text = input.value.trim();
-      if (!text || !state.activeRoomId) return;
-      const room = state.voiceRooms.find((r) => r.id === state.activeRoomId);
-      room.messages.push({
-        authorName: state.user.displayName,
-        username: state.user.username,
-        text
-      });
-      input.value = '';
-      renderActiveRoom();
-    }
-
-    function generateIceBreaker() {
-      const item = state.iceBreakers[Math.floor(Math.random() * state.iceBreakers.length)];
-      document.getElementById('ice-breaker-type').textContent = item.type;
-      document.getElementById('ice-breaker-text').textContent = item.text;
-      document.getElementById('ice-breaker-box').classList.remove('hidden');
-    }
-
-    // ==================== CREATE POST (WITH IMAGE UPLOAD / PRESET) ====================
-    function toggleActionMenu(force) {
-      const overlay = document.getElementById('action-menu-overlay');
-      const icon = document.getElementById('fab-icon');
-      const isHidden = overlay.classList.contains('hidden');
-      const show = typeof force === 'boolean' ? force : isHidden;
-
-      overlay.classList.toggle('hidden', !show);
-      icon.style.transform = show ? 'rotate(45deg)' : 'rotate(0deg)';
-    }
-
-    function openCreatePostModal() {
-      const tagsWrap = document.getElementById('create-post-tags');
-      tagsWrap.innerHTML = state.tags.map((t) => `
-        <button type="button" onclick="selectNewPostTag('${t}')" class="px-3 py-1 rounded-full text-xs font-bold border transition ${
-          state.selectedPostTag === t
-            ? 'bg-memo-orange text-white border-memo-orange'
-            : 'bg-memo-elevated text-gray-300 border-memo-border'
-        }">${t}</button>
-      `).join('');
-
-      const presetsRow = document.getElementById('preset-images-row');
-      presetsRow.innerHTML = PRESET_IMAGES.map((img, idx) => `
-        <button type="button" onclick="selectPresetImage(${idx})" class="shrink-0 px-2.5 py-1.5 rounded-xl bg-memo-elevated hover:bg-memo-border border border-memo-border text-[11px] font-semibold text-gray-200">
-          ${img.label}
-        </button>
-      `).join('');
-
-      document.getElementById('create-post-modal').classList.remove('hidden');
-      lucide.createIcons();
-    }
-
-    function selectNewPostTag(tag) {
-      state.selectedPostTag = tag;
-      openCreatePostModal();
-    }
-
-    function selectPresetImage(idx) {
-      const preset = PRESET_IMAGES[idx];
-      if (!preset) return;
-      state.selectedPostImage = preset.url;
-      showPostImagePreview(preset.url);
-    }
-
-    function handleImageFileUpload(event) {
-      try {
-        const file = event.target.files && event.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          if (e.target && e.target.result) {
-            state.selectedPostImage = e.target.result;
-            showPostImagePreview(e.target.result);
-          }
-        };
-        reader.onerror = function () {
-          showToast('ပုံဖတ်ရာတွင် အဆင်မပြေပါ၊ Preset ပုံလေး ရွေးကြည့်ပါ');
-        };
-        reader.readAsDataURL(file);
-      } catch (_) {
-        showToast('ပုံရွေးချယ်ရာတွင် အဆင်မပြေပါ');
-      }
-    }
-
-    function showPostImagePreview(src) {
-      const wrap = document.getElementById('new-post-image-preview-wrap');
-      const img = document.getElementById('new-post-image-preview');
-      if (wrap && img) {
-        img.src = src;
-        wrap.classList.remove('hidden');
-      }
-    }
-
-    function clearSelectedPostImage() {
-      state.selectedPostImage = null;
-      const wrap = document.getElementById('new-post-image-preview-wrap');
-      const fileInput = document.getElementById('post-file-input');
-      if (wrap) wrap.classList.add('hidden');
-      if (fileInput) fileInput.value = '';
-    }
-
-    function closeCreatePostModal() {
-      document.getElementById('create-post-modal').classList.add('hidden');
-    }
-
-    function submitNewPost() {
-      const contentEl = document.getElementById('post-content-input');
-      const content = contentEl.value.trim();
-      if (!content && !state.selectedPostImage) {
-        showToast('စာသား သို့မဟုတ် ဓာတ်ပုံ တစ်ခုခု ထည့်ပေးပါဦး ✍️');
-        return;
-      }
-      const isAnon = document.getElementById('post-anon-toggle').checked;
-      const randomNum = Math.floor(100 + Math.random() * 899);
-
-      state.posts.unshift({
-        id: Date.now(),
-        authorName: isAnon ? `လျှို့ဝှက်လူငယ် #${randomNum}` : state.user.displayName,
-        username: isAnon ? '@anonymous' : state.user.username,
-        avatar: isAnon ? '🎭' : state.user.avatar,
-        frame: isAnon ? 'frame-purple' : state.user.frame,
-        level: state.user.level,
-        isAnon,
-        tag: isAnon ? '#Anonymous' : state.selectedPostTag,
-        mood: state.user.mood,
-        time: 'Just now',
-        content: content || '📸 Memory Photo',
-        image: state.selectedPostImage,
-        likes: 1,
-        liked: true,
-        bookmarked: false,
-        comments: []
-      });
-
-      contentEl.value = '';
-      clearSelectedPostImage();
-      closeCreatePostModal();
-      switchTab('feed');
-      setFeedFilter('All');
-      gainXp(25);
-      showToast('✨ Memory အသစ် တင်ပြီးပါပြီ (+25 XP)');
-    }
-
-    // ==================== CREATE ROOM & CREATE PUBLIC GROUP MODALS ====================
-    function openCreateRoomModal() {
-      const vibes = ['#NightChill', '#MusicVibe', '#SafeSpace', '#StudyChill'];
-      const wrap = document.getElementById('new-room-vibes');
-      wrap.innerHTML = vibes.map((v) => `
-        <button type="button" onclick="selectNewRoomVibe('${v}')" class="px-3 py-1.5 rounded-full text-xs font-bold border transition ${
-          state.selectedRoomVibe === v
-            ? 'bg-memo-purple text-white border-memo-purple'
-            : 'bg-memo-elevated text-gray-300 border-memo-border'
-        }">${v}</button>
-      `).join('');
-      document.getElementById('create-room-modal').classList.remove('hidden');
-    }
-
-    function selectNewRoomVibe(v) {
-      state.selectedRoomVibe = v;
-      openCreateRoomModal();
-    }
-
-    function closeCreateRoomModal() {
-      document.getElementById('create-room-modal').classList.add('hidden');
-    }
-
-    function submitNewRoom() {
-      const titleInput = document.getElementById('new-room-title');
-      const title = titleInput.value.trim() || `🎙️ ${state.user.displayName} ရဲ့ Chill Hangout`;
-      const newId = 'r' + Date.now();
-
-      state.voiceRooms.unshift({
-        id: newId,
-        title,
-        hostName: state.user.displayName,
-        hostUsername: state.user.username,
-        tag: state.selectedRoomVibe,
-        listeners: 1,
-        speakers: [
-          {
-            displayName: state.user.displayName,
-            username: state.user.username,
-            avatar: state.user.avatar,
-            speaking: true,
-            host: true
-          }
-        ],
-        messages: [
-          { authorName: 'Memo SafeBot', username: '@system', text: 'Voice Room အသစ် စတင်ပါပြီ! သူငယ်ချင်းတွေကို ဖိတ်ခေါ်လိုက်ပါ 🧡' }
-        ]
-      });
-
-      titleInput.value = '';
-      closeCreateRoomModal();
-      renderVoiceRoomsList();
-      gainXp(40);
-      joinVoiceRoom(newId);
-    }
-
-    function openCreateGroupModal() {
-      document.getElementById('create-group-modal').classList.remove('hidden');
-    }
-
-    function closeCreateGroupModal() {
-      document.getElementById('create-group-modal').classList.add('hidden');
-    }
-
-    function submitNewGroup() {
-      const nameInput = document.getElementById('new-group-name');
-      const descInput = document.getElementById('new-group-desc');
-      const vcToggle = document.getElementById('new-group-vc-toggle');
-
-      const name = nameInput.value.trim() || `${state.user.displayName}'s Squad 🔥`;
-      const desc = descInput.value.trim() || 'စကားပြောမယ် သီချင်းနားထောင်မယ် Safe Space Group';
-      const vcLive = vcToggle ? vcToggle.checked : true;
-      const newGpId = 'gp_' + Date.now();
-
-      state.publicGroups.unshift({
-        id: newGpId,
-        name,
-        ownerName: state.user.displayName,
-        ownerUsername: state.user.username,
-        members: 1,
-        desc,
-        vcLive: false,
-        roomId: null,
-        isMine: true
-      });
-
-      nameInput.value = '';
-      descInput.value = '';
-      closeCreateGroupModal();
-      switchTab('rooms');
-      gainXp(50);
-
-      if (vcLive) {
-        startGroupVc(newGpId);
-      } else {
-        renderPublicGroups();
-        showToast('👥 Public Squad ဖွဲ့ပြီးပါပြီ (+50 XP)');
-      }
-    }
-
-    // ==================== EDIT PROFILE & BIO MODAL ====================
-    function openEditProfileModal() {
-      const avatars = ['🦊', '🐼', '🐺', '🐰', '🐯', '🐨', '🦋', '🦉', '🐱', '🐸'];
-      const choicesWrap = document.getElementById('edit-avatar-choices');
-      choicesWrap.innerHTML = avatars.map((av) => `
-        <button type="button" onclick="selectEditAvatar('${av}')" class="shrink-0 w-10 h-10 rounded-full bg-memo-elevated border-2 ${
-          state.user.avatar === av ? 'border-memo-orange' : 'border-memo-border'
-        } flex items-center justify-center text-xl">
-          ${av}
-        </button>
-      `).join('');
-
-      document.getElementById('edit-display-name').value = state.user.displayName;
-      document.getElementById('edit-username').value = state.user.username;
-      document.getElementById('edit-bio').value = state.user.bio;
-      document.getElementById('edit-profile-modal').classList.remove('hidden');
-    }
-
-    function selectEditAvatar(av) {
-      state.user.avatar = av;
-      openEditProfileModal();
-    }
-
-    function closeEditProfileModal() {
-      document.getElementById('edit-profile-modal').classList.add('hidden');
-    }
-
-    function saveProfileChanges() {
-      const newName = document.getElementById('edit-display-name').value.trim();
-      let newUser = document.getElementById('edit-username').value.trim();
-      const newBio = document.getElementById('edit-bio').value.trim();
-
-      if (newName) state.user.displayName = newName;
-      if (newUser) {
-        if (!newUser.startsWith('@')) newUser = '@' + newUser;
-        state.user.username = newUser.replace(/\s+/g, '_').toLowerCase();
-      }
-      state.user.bio = newBio || 'Safe Space & Voice Hangout ✨';
-
-      syncUserProfileUi();
-      closeEditProfileModal();
-      showToast('Profile & Bio သိမ်းဆည်းပြီးပါပြီ ✨');
-    }
-
-    function syncUserProfileUi() {
-      document.getElementById('profile-display-name').textContent = state.user.displayName;
-      document.getElementById('profile-username-text').textContent = state.user.username;
-      document.getElementById('profile-bio-text').textContent = state.user.bio;
-      document.getElementById('profile-avatar-box').textContent = state.user.avatar;
-      document.getElementById('composer-avatar').textContent = state.user.avatar;
-      document.querySelectorAll('.user-avatar-preview').forEach((el) => {
-        el.textContent = state.user.avatar;
-      });
-      renderPosts();
-      renderPublicGroups();
-    }
-
-    // ==================== MOOD PICKER MODAL ====================
-    function openMoodModal() {
-      const list = document.getElementById('mood-options-list');
-      list.innerHTML = state.moods.map((m) => `
-        <button onclick="selectMood('${m}')" class="w-full p-3 rounded-2xl text-left text-xs font-bold flex items-center justify-between border transition ${
-          state.user.mood === m
-            ? 'bg-memo-orange/20 border-memo-orange text-white'
-            : 'bg-memo-elevated border-memo-border text-gray-300 hover:text-white'
-        }">
-          <span>${m}</span>
-          ${state.user.mood === m ? '<span class="text-memo-orange">✓</span>' : ''}
-        </button>
-      `).join('');
-      document.getElementById('mood-modal').classList.remove('hidden');
-    }
-
-    function closeMoodModal() {
-      document.getElementById('mood-modal').classList.add('hidden');
-    }
-
-    function selectMood(m) {
-      state.user.mood = m;
-      document.getElementById('current-mood-display').textContent = m;
-      document.getElementById('profile-mood-pill').innerHTML = `<span>${m}</span>`;
-      closeMoodModal();
-      showToast('Vibe ပြောင်းလဲပြီးပါပြီ ✨');
-    }
-
-    // ==================== CHATS & @USERNAME SEARCH ====================
-    function renderChatsView() {
-      const queryInput = document.getElementById('friend-search-input');
-      const query = queryInput ? queryInput.value.trim().toLowerCase() : '';
-
-      const filteredFriends = state.friends.filter((f) =>
-        f.displayName.toLowerCase().includes(query) ||
-        f.username.toLowerCase().includes(query)
-      );
-
-      const strip = document.getElementById('online-friends-strip');
-      strip.innerHTML = filteredFriends.map((f) => `
-        <button onclick="openDmScreen('${f.id}')" class="shrink-0 flex flex-col items-center w-20 text-center">
-          <div class="relative">
-            <div class="w-12 h-12 rounded-full bg-memo-elevated flex items-center justify-center text-xl ${f.frame}">
-              ${f.avatar}
-            </div>
-            <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full ${f.online ? 'bg-memo-green' : 'bg-gray-500'} border-2 border-memo-bg"></span>
-          </div>
-          <span class="text-[11px] font-bold text-white truncate w-full mt-1.5">${escapeHtml(f.displayName)}</span>
-          <span class="text-[9.5px] font-semibold text-memo-orange truncate w-full">${escapeHtml(f.username)}</span>
-        </button>
-      `).join('');
-
-      const list = document.getElementById('dm-threads-list');
-      if (filteredFriends.length === 0) {
-        list.innerHTML = `<p class="text-center text-xs text-gray-500 py-8">ရှာဖွေသော @username မတွေ့ပါ</p>`;
-        return;
-      }
-
-      list.innerHTML = filteredFriends.map((f) => `
-        <div onclick="openDmScreen('${f.id}')" class="cursor-pointer p-3 rounded-2xl bg-memo-card hover:bg-memo-elevated border border-memo-border flex items-center gap-3 transition">
-          <div class="relative shrink-0">
-            <div class="w-12 h-12 rounded-full bg-memo-elevated flex items-center justify-center text-xl ${f.frame}">
-              ${f.avatar}
-            </div>
-            ${f.online ? `<span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-memo-green border-2 border-memo-card"></span>` : ''}
-          </div>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center justify-between gap-1">
-              <div class="flex items-center gap-1.5 min-w-0">
-                <h4 class="text-sm font-bold text-white truncate">${escapeHtml(f.displayName)}</h4>
-                <span class="text-[11px] font-semibold text-memo-orange truncate">${escapeHtml(f.username)}</span>
-              </div>
-              <span class="text-xs shrink-0">${f.mood.split(' ')[0]}</span>
-            </div>
-            <p class="text-xs text-gray-400 truncate mt-0.5">${escapeHtml(f.lastMsg)}</p>
-          </div>
-          ${f.unread > 0 ? `<span class="w-5 h-5 rounded-full bg-memo-orange text-white text-[10px] font-extrabold flex items-center justify-center shrink-0">${f.unread}</span>` : ''}
-        </div>
-      `).join('');
-    }
-
-    function openDmScreen(friendId) {
-      state.activeDmFriendId = friendId;
-      const friend = state.friends.find((f) => f.id === friendId);
-      if (!friend) return;
-      friend.unread = 0;
-
-      const hasUnread = state.friends.some((f) => f.unread > 0);
-      document.getElementById('chat-unread-dot').classList.toggle('hidden', !hasUnread);
-
-      document.getElementById('dm-peer-avatar').textContent = friend.avatar;
-      document.getElementById('dm-peer-avatar').className = `w-10 h-10 rounded-full bg-memo-elevated flex items-center justify-center text-lg ${friend.frame}`;
-      document.getElementById('dm-peer-name').textContent = friend.displayName;
-      document.getElementById('dm-peer-username').textContent = friend.username;
-      document.getElementById('dm-peer-mood').textContent = `${friend.online ? 'Online' : 'Offline'} • ${friend.mood}`;
-
-      renderDmMessages();
-      renderChatsView();
-      document.getElementById('dm-screen').classList.remove('hidden');
-    }
-
-    function closeDmScreen() {
-      document.getElementById('dm-screen').classList.add('hidden');
-      state.activeDmFriendId = null;
-    }
-
-    function renderDmMessages() {
-      const area = document.getElementById('dm-messages-area');
-      const msgs = state.dmHistory[state.activeDmFriendId] || [];
-      area.innerHTML = msgs.map((m) => `
-        <div class="flex ${m.from === 'me' ? 'justify-end' : 'justify-start'}">
-          <div class="max-w-[78%] px-3.5 py-2.5 rounded-2xl text-xs leading-relaxed ${
-            m.from === 'me'
-              ? 'bg-memo-orange text-white rounded-br-sm font-medium'
-              : 'bg-memo-card border border-memo-border text-gray-100 rounded-bl-sm'
-          }">
-            ${escapeHtml(m.text)}
-          </div>
-        </div>
-      `).join('');
-      area.scrollTop = area.scrollHeight;
-    }
-
-    function sendDmMessage() {
-      const input = document.getElementById('dm-input');
-      const text = input.value.trim();
-      const fid = state.activeDmFriendId;
-      if (!text || !fid) return;
-
-      state.dmHistory[fid].push({ from: 'me', text });
-      const friend = state.friends.find((f) => f.id === fid);
-      friend.lastMsg = text;
-      input.value = '';
-      renderDmMessages();
-      renderChatsView();
-
-      setTimeout(() => {
-        if (!state.dmHistory[fid]) return;
-        const replies = [
-          'ဟုတ်တယ်နော် အရမ်းမိုက်တယ် 🧡',
-          'ခဏနေ Voice Room ထဲ အတူဝင်ရအောင်လေ 🎧',
-          'အေးဆေးပေါ့ စိတ်ညစ်မနေနဲ့ ငါရှိတယ်နော် ✨',
-          'Haha ဟုတ်ပ အရင် Omlet တုန်းကလိုပဲ 😄'
-        ];
-        const reply = replies[Math.floor(Math.random() * replies.length)];
-        state.dmHistory[fid].push({ from: 'them', text: reply });
-        friend.lastMsg = reply;
-        if (state.activeDmFriendId === fid) renderDmMessages();
-        renderChatsView();
-      }, 900);
-    }
-
-    // ==================== NEON AVATAR FRAMES ====================
-    function selectAvatarFrame(frameClass, btnEl) {
-      state.user.frame = frameClass;
-      const box = document.getElementById('profile-avatar-box');
-      const composerBox = document.getElementById('composer-avatar');
-      [box, composerBox].forEach((el) => {
-        if (!el) return;
-        el.classList.remove('frame-orange', 'frame-purple', 'frame-cyan', 'frame-rose');
-        el.classList.add(frameClass);
-      });
-
-      document.querySelectorAll('.frame-option').forEach((b) => {
-        b.classList.remove('border-2', 'border-memo-orange');
-        b.classList.add('border', 'border-memo-border');
-      });
-      if (btnEl) {
-        btnEl.classList.remove('border', 'border-memo-border');
-        btnEl.classList.add('border-2', 'border-memo-orange');
-      }
-      showToast('Neon Frame ပြောင်းလဲပြီးပါပြီ ✨');
-    }
-
-    // ==================== KEYBOARD ENTER HANDLERS ====================
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && document.activeElement) {
-        const id = document.activeElement.id;
-        if (id === 'comment-input') submitComment();
-        if (id === 'room-chat-input') sendRoomChat();
-        if (id === 'dm-input') sendDmMessage();
+        statusEl.textContent = "Offline / Retrying";
+        statusEl.style.color = "#f59e0b";
       }
     });
 
-    // ==================== INITIALIZE APPLICATION ====================
-    window.addEventListener('DOMContentLoaded', () => {
-      renderFeedFilters();
-      renderPosts();
-      renderPublicGroups();
-      renderVoiceRoomsList();
-      renderChatsView();
-      if (window.lucide) {
-        window.lucide.createIcons();
-      }
+    const tabs = {
+      feed: { el: document.getElementById("tab-feed"), btn: document.getElementById("nav-feed") },
+      chat: { el: document.getElementById("tab-chat"), btn: document.getElementById("nav-chat") },
+      profile: { el: document.getElementById("tab-profile"), btn: document.getElementById("nav-profile") }
+    };
+    function switchTab(name) {
+      Object.entries(tabs).forEach(([k, v]) => {
+        v.el.classList.toggle("hidden", k !== name);
+        v.btn.classList.toggle("active", k === name);
+      });
+    }
+    tabs.feed.btn.onclick = () => switchTab("feed");
+    tabs.chat.btn.onclick = () => switchTab("chat");
+    tabs.profile.btn.onclick = () => switchTab("profile");
+
+    document.getElementById("btn-save-profile").onclick = () => {
+      profile = {
+        name: (profNameEl.value.trim() || "Memo User"),
+        handle: (profHandleEl.value.trim().replace(/^@+/, "") || "user"),
+        bio: profBioEl.value.trim()
+      };
+      syncProfileUI();
+      alert("Profile သိမ်းပြီးပါပြီ!");
+    };
+
+    document.getElementById("btn-post").onclick = async () => {
+      const input = document.getElementById("post-input");
+      const text = input.value.trim();
+      if (!text) return;
+      await push(ref(db, "posts"), {
+        uid,
+        name: profile.name,
+        handle: profile.handle,
+        text,
+        likes: 0,
+        createdAt: Date.now()
+      });
+      input.value = "";
+    };
+
+    const feedList = document.getElementById("feed-list");
+    onValue(ref(db, "posts"), (snap) => {
+      const val = snap.val() || {};
+      const items = Object.entries(val)
+        .map(([id, p]) => ({ id, ...p }))
+        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+      feedList.innerHTML = items.map(p => `
+        <div class="card post">
+          <div class="post-head">
+            <div>
+              <span class="author">${escapeHtml(p.name || "User")}</span>
+              <span class="handle">@${escapeHtml(p.handle || "member")}</span>
+            </div>
+            <span class="time">${formatTime(p.createdAt)}</span>
+          </div>
+          <div class="post-body">${escapeHtml(p.text || "")}</div>
+          <div class="post-actions">
+            <button class="secondary small" onclick="window.likePost('${p.id}', ${p.likes || 0})">♥ ${p.likes || 0}</button>
+          </div>
+        </div>
+      `).join("") || `<div class="card" style="color:var(--muted); text-align:center;">Post များ မရှိသေးပါ။ ပထမဆုံး Post တစ်ခု တင်လိုက်ပါ!</div>`;
     });
-  </script>
-</body>
-</html>
+
+    window.likePost = (id, currentLikes) => {
+      update(ref(db, `posts/${id}`), { likes: (currentLikes || 0) + 1 }).catch(() => {});
+    };
+
+    async function sendChat() {
+      const input = document.getElementById("chat-input");
+      const text = input.value.trim();
+      if (!text) return;
+      await push(ref(db, "messages"),
+    
