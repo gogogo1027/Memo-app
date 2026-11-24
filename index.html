@@ -44,7 +44,7 @@
 </head>
 <body class="min-h-screen pb-24 bg-[#0D0E12] text-gray-100">
 
-  <!-- ENTRY GATE MODAL (USERNAME & FRIEND PASSCODE) -->
+  <!-- LOGIN / PASSWORD GATE MODAL -->
   <div id="gate-modal" class="fixed inset-0 z-50 bg-[#0D0E12]/95 backdrop-blur-md flex items-center justify-center p-4">
     <div class="w-full max-w-md bg-[#161821] border border-[#282C3C] rounded-3xl p-6 shadow-2xl space-y-4">
       <div class="flex items-center justify-between border-b border-[#282C3C] pb-3.5">
@@ -60,13 +60,13 @@
           </div>
         </div>
         <span class="text-[11px] px-2.5 py-1 rounded-full bg-[#FF6B2B]/15 border border-[#FF6B2B]/30 text-[#FF944D] font-semibold">
-          Friends Only
+          Password Protected
         </span>
       </div>
 
       <div class="space-y-3">
         <div>
-          <label class="block text-xs font-medium text-gray-300 mb-1">Display Name (ပြသမည့် နာမည်)</label>
+          <label class="block text-xs font-medium text-gray-300 mb-1">Display Name (နာမည်)</label>
           <input id="gate-name" type="text" placeholder="ဥပမာ - Gogogo"
             class="w-full bg-[#1E212D] border border-[#282C3C] focus:border-[#FF6B2B] rounded-xl px-3.5 py-2.5 text-sm text-white outline-none transition" />
         </div>
@@ -78,10 +78,10 @@
         </div>
 
         <div>
-          <label class="block text-xs font-medium text-gray-300 mb-1">Friend Passcode (သူငယ်ချင်း စကားဝှက်)</label>
-          <input id="gate-passcode" type="password" placeholder="Default: memo1027"
+          <label class="block text-xs font-medium text-gray-300 mb-1">Password</label>
+          <input id="gate-password" type="password" placeholder="Password ရိုက်ထည့်ပါ (Default: memo1027)"
             class="w-full bg-[#1E212D] border border-[#282C3C] focus:border-[#FF6B2B] rounded-xl px-3.5 py-2.5 text-sm text-white outline-none transition" />
-          <p class="text-[11px] text-gray-500 mt-1">Code ထဲက <code class="text-[#FF944D]">FRIEND_PASSCODE</code> ကို ကိုယ်ကြိုက်တဲ့ စကားဝှက် ပြောင်းနိုင်ပါသည်။</p>
+          <p class="text-[11px] text-gray-500 mt-1">Code ထဲက <code class="text-[#FF944D]">APP_PASSWORD</code> ကို ကိုယ်ကြိုက်တဲ့ Password ပြောင်းနိုင်ပါသည်။</p>
         </div>
       </div>
 
@@ -89,7 +89,7 @@
 
       <button id="btn-gate-enter"
         class="w-full py-3 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-[#FF6B2B] to-[#FF944D] hover:opacity-95 active:scale-[0.99] transition shadow-lg shadow-[#FF6B2B]/25">
-        အတည်ပြုပြီး Memo ထဲ ဝင်မည်
+        Password အတည်ပြုပြီး ဝင်မည်
       </button>
     </div>
   </div>
@@ -128,7 +128,6 @@
 
     <!-- ==================== TAB 1: FEED ==================== -->
     <section id="tab-feed" class="space-y-4">
-      <!-- Create Post Card -->
       <div class="bg-[#161821] border border-[#282C3C] rounded-2xl p-4 space-y-3 shadow-sm">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
@@ -160,7 +159,6 @@
         </div>
       </div>
 
-      <!-- Search & Filter Bar -->
       <div class="flex items-center gap-2">
         <div class="relative flex-1">
           <i data-lucide="search" class="w-4 h-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2"></i>
@@ -172,13 +170,11 @@
         </span>
       </div>
 
-      <!-- Posts Feed List -->
       <div id="feed-list" class="space-y-3"></div>
     </section>
 
     <!-- ==================== TAB 2: CHAT ==================== -->
     <section id="tab-chat" class="hidden space-y-3">
-      <!-- Active Friends Strip -->
       <div class="bg-[#161821] border border-[#282C3C] rounded-2xl p-3 space-y-2">
         <div class="flex items-center justify-between">
           <span class="text-xs font-bold text-gray-300 flex items-center gap-1.5">
@@ -190,7 +186,6 @@
         <div id="friends-strip" class="flex gap-2 overflow-x-auto pb-1"></div>
       </div>
 
-      <!-- Chat Box -->
       <div class="bg-[#161821] border border-[#282C3C] rounded-2xl p-4 space-y-3">
         <div class="flex items-center justify-between border-b border-[#282C3C] pb-2.5">
           <div>
@@ -228,7 +223,7 @@
             </span>
             <h2 class="text-lg font-extrabold text-white mt-2">Late Night Friends Room</h2>
             <p class="text-xs text-gray-400 mt-1">
-              သူငယ်ချင်းတွေ Voice Room ထဲ ရှိမရှိ Live ကြည့်နိုင်ပြီး ZegoCloud / Agora SDK ကိုလည်း အလွယ်တကူ ထပ်ချိတ်နိုင်ပါသည်။
+              သူငယ်ချင်းတွေ Voice Room ထဲ ရှိမရှိ Live ကြည့်နိုင်ပြီး ZegoCloud / Agora SDK ကိုလည်း ထပ်ချိတ်နိုင်ပါသည်။
             </p>
           </div>
           <div class="w-11 h-11 rounded-2xl bg-[#1E212D] border border-[#282C3C] flex items-center justify-center text-[#FF6B2B] shrink-0">
@@ -255,11 +250,6 @@
           <div class="text-xs font-bold text-gray-300">Room ထဲ ရှိနေသူများ</div>
           <div id="voice-participants" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5"></div>
         </div>
-
-        <div class="bg-[#1E212D] border border-[#282C3C] rounded-xl p-3.5 text-xs text-gray-400 space-y-1">
-          <div class="font-semibold text-gray-200">Real-time Audio SDK Integration Note</div>
-          <p>Real-time အသံပြောဖို့အတွက် <strong class="text-[#FF944D]">ZegoCloud Express SDK</strong> သို့မဟုတ် <strong class="text-[#FF944D]">Agora RTC SDK</strong> ရဲ့ App ID ကို ဒီ Room ထဲ ချိတ်ဆက်ပေးလို့ ရပါတယ်။</p>
-        </div>
       </div>
     </section>
 
@@ -273,7 +263,7 @@
           </div>
           <button id="btn-reopen-gate"
             class="text-xs px-3 py-1.5 rounded-xl bg-[#1E212D] border border-[#282C3C] text-[#FF944D] font-semibold hover:border-[#FF6B2B] transition">
-            Username / Passcode ပြောင်းမည်
+            Username / Password ပြောင်းမည်
           </button>
         </div>
 
@@ -350,40 +340,29 @@
   </nav>
 
   <script>
-    // =========================================================================
-    // CONFIGURATION
-    // =========================================================================
     const DB_URL = "https://memo-app-1c08a-default-rtdb.asia-southeast1.firebasedatabase.app";
-    const FRIEND_PASSCODE = "memo1027"; // သူငယ်ချင်းများသာ ဝင်ရန် စကားဝှက်
+    const APP_PASSWORD = "memo1027"; // Password (ကိုယ်ကြိုက်တဲ့ စကားဝှက် ပြောင်းနိုင်သည်)
 
-    let uid = localStorage.getItem("memo_uid_v2");
+    let uid = localStorage.getItem("memo_uid_v3");
     if (!uid) {
       uid = "u_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 7);
-      localStorage.setItem("memo_uid_v2", uid);
+      localStorage.setItem("memo_uid_v3", uid);
     }
 
-    let isFriendVerified = localStorage.getItem("memo_verified_v2") === "yes";
-    let profile = JSON.parse(localStorage.getItem("memo_profile_v2") || "null") || {
+    let isPasswordVerified = localStorage.getItem("memo_pw_ok_v3") === "yes";
+    let profile = JSON.parse(localStorage.getItem("memo_profile_v3") || "null") || {
       name: "",
       handle: "",
       mood: "Chill",
       bio: "Memo friend"
     };
 
-    let voiceState = {
-      inRoom: false,
-      muted: false,
-      handRaised: false
-    };
-
+    let voiceState = { inRoom: false, muted: false, handRaised: false };
     let latestPosts = {};
     let latestMessages = {};
     let latestUsers = {};
     let latestVoice = {};
 
-    // =========================================================================
-    // FIREBASE REST HELPERS
-    // =========================================================================
     async function fbGet(path) {
       const res = await fetch(`${DB_URL}/${path}.json`, { cache: "no-store" });
       if (!res.ok) throw new Error(`GET ${path} failed (${res.status})`);
@@ -411,4 +390,30 @@
     }
 
     async function fbPatch(path, payload) {
-      const res = await fetch(`${DB_URL}/${path}.json`, 
+      const res = await fetch(`${DB_URL}/${path}.json`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error(`PATCH ${path} failed (${res.status})`);
+      return await res.json();
+    }
+
+    async function fbDelete(path) {
+      const res = await fetch(`${DB_URL}/${path}.json`, { method: "DELETE" });
+      if (!res.ok) throw new Error(`DELETE ${path} failed (${res.status})`);
+      return await res.json();
+    }
+
+    const gateModal = document.getElementById("gate-modal");
+    const gateName = document.getElementById("gate-name");
+    const gateHandle = document.getElementById("gate-handle");
+    const gatePassword = document.getElementById("gate-password");
+    const gateError = document.getElementById("gate-error");
+
+    function checkGate() {
+      const ok = Boolean(isPasswordVerified && profile.name && profile.handle);
+      gateModal.classList.toggle("hidden", ok);
+      if (!ok) {
+        gateName.value = profile.name || "";
+        gat
