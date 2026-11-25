@@ -1,1 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101116">
+<title>memo — community</title>
+<style>
+:root{--bg:#101116;--panel:#181a22;--panel2:#20232d;--line:#2b2e3a;--text:#f4f5f8;--muted:#9ba1b1;--accent:#8b6cff;--accent2:#b39cff;--danger:#ff647c;--green:#54d6a0;--shadow:0 18px 50px #0005}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 20% -10%,#292044 0,transparent 38%),var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif}button,input,textarea{font:inherit}button{cursor:pointer}.app{min-height:100vh;display:grid;grid-template-columns:245px minmax(0,760px) 280px;gap:24px;max-width:1390px;margin:auto;padding:24px}.sidebar,.rightbar{position:sticky;top:24px;height:calc(100vh - 48px);align-self:start}.brand{display:flex;align-items:center;gap:11px;font-size:23px;font-weight:850;letter-spacing:-1px;margin:8px 0 36px}.logo{width:39px;height:39px;border-radius:13px;background:linear-gradient(135deg,#a18aff,#6547d9);display:grid;place-items:center;font-weight:900;box-shadow:0 8px 25px #8064ff55}.nav{display:grid;gap:8px}.nav button{border:0;background:transparent;color:var(--muted);text-align:left;padding:13px 15px;border-radius:13px;display:flex;gap:13px;align-items:center;font-weight:650}.nav button.active,.nav button:hover{background:#29243c;color:white}.nav .ico{width:21px;text-align:center;font-size:18px}.side-bottom{position:absolute;bottom:0;left:0;right:0}.user-mini{background:var(--panel);border:1px solid var(--line);padding:12px;border-radius:15px;display:flex;align-items:center;gap:10px}.avatar{width:40px;height:40px;flex:none;border-radius:50%;background:linear-gradient(135deg,#8e77ff,#3f9fc9);display:grid;place-items:center;font-weight:800;color:white;overflow:hidden}.avatar img{width:100%;height:100%;object-fit:cover}.muted{color:var(--muted)}.small{font-size:12px}.main{min-width:0}.topbar{display:flex;align-items:center;justify-content:space-between;margin:6px 0 22px}.topbar h1{font-size:25px;letter-spacing:-.7px;margin:0}.pill{font-size:12px;padding:6px 10px;border-radius:99px;background:#28243a;color:var(--accent2);border:1px solid #433765}.card{background:linear-gradient(145deg,#1b1d26,#171920);border:1px solid var(--line);border-radius:18px;padding:17px;margin-bottom:15px;box-shadow:0 8px 25px #0002}.composer{display:flex;gap:12px}.composer-body{flex:1;min-width:0}.composer textarea,.field{width:100%;background:#11131a;border:1px solid var(--line);color:var(--text);border-radius:12px;padding:12px;outline:none;resize:vertical}.composer textarea:focus,.field:focus{border-color:var(--accent)}.actions{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:11px}.btn{border:0;border-radius:11px;padding:10px 15px;background:var(--accent);color:white;font-weight:750}.btn:hover{filter:brightness(1.1)}.btn.secondary{background:#292c37;color:#e6e7ed;border:1px solid var(--line)}.btn.ghost{background:transparent;color:var(--muted);padding:8px}.btn.danger{background:#49232e;color:#ff9baa}.post-head{display:flex;align-items:center;gap:10px}.post-head .meta{flex:1}.post-text{white-space:pre-wrap;margin:14px 0 12px;overflow-wrap:anywhere}.post-image{width:100%;max-height:420px;object-fit:cover;border-radius:13px;margin-top:8px}.post-foot{display:flex;gap:8px;border-top:1px solid var(--line);padding-top:11px}.post-foot button{border:0;background:transparent;color:var(--muted);padding:6px 9px;border-radius:9px}.post-foot button:hover{background:var(--panel2);color:white}.section{display:none}.section.active{display:block}.empty{text-align:center;padding:45px 15px;color:var(--muted)}.rightbar .card{padding:16px}.rightbar h3{font-size:14px;margin:0 0 13px}.online-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;margin-right:6px}.person{display:flex;align-items:center;gap:10px;margin:12px 0}.person .avatar{width:34px;height:34px}.room{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-top:1px solid var(--line)}.tag{font-size:11px;background:#28243a;color:#b9a8ff;padding:4px 8px;border-radius:99px}.form-grid{display:grid;gap:11px}.form-grid label{font-size:12px;color:var(--muted);display:grid;gap:6px}.chat-layout{display:grid;grid-template-columns:210px 1fr;gap:12px;min-height:520px}.chat-list,.chat-window{background:var(--panel);border:1px solid var(--line);border-radius:15px;overflow:hidden}.chat-list{padding:10px}.chat-person{padding:11px;border-radius:10px;cursor:pointer;color:var(--muted)}.chat-person.selected,.chat-person:hover{background:#29243c;color:white}.chat-window{display:flex;flex-direction:column}.chat-title{padding:13px;border-bottom:1px solid var(--line);font-weight:700}.messages{flex:1;padding:14px;overflow:auto;display:flex;flex-direction:column;gap:10px;max-height:390px}.bubble{max-width:80%;padding:10px 12px;border-radius:13px;background:#292c37;align-self:flex-start;overflow-wrap:anywhere}.bubble.mine{background:#5945a8;align-self:flex-end}.send-row{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line)}.send-row input{flex:1;min-width:0}.community-row{display:flex;justify-content:space-between;align-items:center;gap:12px}.community-row h3{margin:0}.profile-cover{height:115px;border-radius:14px;background:linear-gradient(110deg,#45326f,#28546a);margin-bottom:-30px}.profile-info{display:flex;align-items:end;gap:13px;padding:0 8px 16px}.profile-info .avatar{width:75px;height:75px;border:4px solid var(--panel)}.stats{display:flex;gap:24px;padding:10px 8px;border-top:1px solid var(--line)}.stat strong{display:block}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#292c37;border:1px solid #454958;padding:11px 16px;border-radius:12px;box-shadow:var(--shadow);z-index:10;display:none}.toast.show{display:block}.mobile-nav{display:none}.status{font-size:12px;color:var(--muted)}.status.ok{color:var(--green)}.status.err{color:#ff8799}
+@media(max-width:1100px){.app{grid-template-columns:210px minmax(0,760px);max-width:1000px}.rightbar{display:none}}
+@media(max-width:700px){.app{display:block;padding:15px 13px 86px}.sidebar{display:none}.topbar{margin-top:4px}.mobile-nav{position:fixed;bottom:0;left:0;right:0;z-index:5;display:flex;justify-content:space-around;background:#171922ee;backdrop-filter:blur(15px);border-top:1px solid var(--line);padding:8px 4px calc(8px + env(safe-area-inset-bottom))}.mobile-nav button{border:0;background:none;color:var(--muted);font-size:11px;display:grid;gap:3px;justify-items:center}.mobile-nav button.active{color:#c0afff}.mobile-nav span{font-size:19px}.chat-layout{grid-template-columns:105px 1fr;min-height:480px}.chat-person{font-size:12px;padding:9px 5px}.card{padding:14px}.topbar h1{font-size:22px}}
+</style>
+</head>
+<body>
+<div class="app">
+ <aside class="sidebar">
+  <div class="brand"><div class="logo">m</div>memo</div>
+  <nav class="nav" id="sideNav">
+   <button class="active" data-page="home"><span class="ico">⌂</span>Home</button>
+   <button data-page="live"><span class="ico">◉</span>Live status</button>
+   <button data-page="chat"><span class="ico">▤</span>Messages</button>
+   <button data-page="community"><span class="ico">◎</span>Communities</button>
+   <button data-page="profile"><span class="ico">♙</span>Profile</button>
+  </nav>
+  <div class="side-bottom"><div class="user-mini"><div class="avatar" id="sideAvatar">M</div><div style="min-width:0"><b id="sideName">Member</b><div class="muted small">Your memo profile</div></div></div><p class="muted small" style="padding:0 5px">memo community · v1.0</p></div>
+ </aside>
+ <main class="main">
+  <div class="topbar"><h1 id="pageTitle">Home</h1><span class="pill" id="connection">Connecting…</span></div>
+  <section class="section active" id="page-home">
+   <div class="card composer"><div class="avatar" id="composerAvatar">M</div><div class="composer-body"><textarea id="postInput" rows="2" placeholder="Share something with your community…"></textarea><div class="actions"><span class="muted small">Be kind. Keep it friendly.</span><button class="btn" id="publishBtn">Post</button></div></div></div>
+   <div id="feed"><div class="empty">Loading posts…</div></div>
+  </section>
+  <section class="section" id="page-live">
+   <div class="card"><h2 style="margin:0 0 6px">Live status</h2><p class="muted">Let people know when you're available. This is a status feature, not a streaming tool.</p><div class="form-grid"><label>Your status<select class="field" id="liveStatus"><option value="offline">Offline</option><option value="available">Available to chat</option><option value="busy">Busy</option></select></label><label>Short message<input class="field" id="liveMessage" maxlength="90" placeholder="What are you up to?"></label><button class="btn" id="saveLive">Update status</button></div></div>
+   <div class="card"><h3>Community presence</h3><div id="liveList" class="muted">Loading status…</div></div>
+  </section>
+  <section class="section" id="page-chat">
+   <div class="chat-layout"><div class="chat-list"><div class="muted small" style="padding:8px">CONVERSATIONS</div><div class="chat-person selected" id="generalChat"># community</div><div class="muted small" style="padding:9px 5px">Public room</div></div><div class="chat-window"><div class="chat-title"># community <span class="muted small"> · shared chat</span></div><div class="messages" id="messages"><div class="empty">Loading messages…</div></div><form class="send-row" id="chatForm"><input class="field" id="chatInput" maxlength="500" placeholder="Write a message…" autocomplete="off"><button class="btn">Send</button></form></div></div>
+   <p class="muted small" style="margin:10px 4px">This first version includes a shared public chat room. Private one-to-one chats require user discovery and access controls.</p>
+  </section>
+  <section class="section" id="page-community">
+   <div class="card"><h2 style="margin:0 0 6px">Communities</h2><p class="muted">Find people around shared interests.</p><form id="communityForm" class="form-grid"><label>Community name<input class="field" id="communityName" maxlength="45" required placeholder="e.g. Art Corner"></label><label>Description<input class="field" id="communityDesc" maxlength="140" placeholder="What is this community about?"></label><button class="btn">Create community</button></form></div>
+   <div id="communityList"><div class="empty">Loading communities…</div></div>
+  </section>
+  <section class="section" id="page-profile">
+   <div class="card"><div class="profile-cover"></div><div class="profile-info"><div class="avatar" id="profileAvatar">M</div><div style="padding-bottom:5px"><h2 id="profileName" style="margin:0">Member</h2><div class="muted small" id="profileHandle">@member</div></div></div><div class="stats"><div class="stat"><strong id="postCount">0</strong><span class="muted small">Posts</span></div><div class="stat"><strong>memo</strong><span class="muted small">Community</span></div></div></div>
+   <div class="card"><h3 style="margin-top:0">Edit profile</h3><form id="profileForm" class="form-grid"><label>Display name<input class="field" id="nameInput" maxlength="32" required></label><label>Bio<textarea class="field" id="bioInput" rows="3" maxlength="160" placeholder="A little about you…"></textarea></label><label>Avatar image URL (optional)<input class="field" id="avatarInput" type="url" placeholder="https://…"></label><button class="btn">Save profile</button></form></div>
+  </section>
+ </main>
+ <aside class="rightbar">
+  <div class="card"><h3><span class="online-dot"></span>Community pulse</h3><div class="muted small">Latest activity on memo</div><div id="pulse"><div class="room"><span>Posts</span><b id="pulsePosts">—</b></div><div class="room"><span>Communities</span><b id="pulseCommunities">—</b></div></div></div>
+  <div class="card"><h3>Popular spaces</h3><div class="room"><span>🎨 Art & creativity</span><span class="tag">Explore</span></div><div class="room"><span>📷 Photography</span><span class="tag">Explore</span></div><div class="room"><span>🎵 Music</span><span class="tag">Explore</span></div></div>
+  <div class="card"><h3>About memo</h3><p class="muted small">A simple place to share updates, chat, and find your community. No gaming features.</p><p class="muted small">Please avoid sharing private information.</p></div>
+ </aside>
+</div>
+<nav class="mobile-nav" id="mobileNav"><button class="active" data-page="home"><span>⌂</span>Home</button><button data-page="live"><span>◉</span>Live</button><button data-page="chat"><span>▤</span>Chat</button><button data-page="community"><span>◎</span>Groups</button><button data-page="profile"><span>♙</span>Me</button></nav>
+<div class="toast" id="toast"></div>
+<script>
+(() => {
+'use strict';
+const DB_URL = 'https://memo-app-1c08a-default-rtdb.asia-southeast1.firebasedatabase.app';
+const $ = id => document.getElementById(id);
+const state = { user:null, posts:[], messages:[], communities:[], live:{}, stream:null, page:'home' };
+const paths = {users:'users',posts:'posts',messages:'messages',communities:'communities',live:'live'};
+const esc = s => String(s ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const key = () => 'u_' + Math.random().toString(36).slice(2,10);
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600)}
+function readUser(){try{return JSON.parse(localStorage.getItem('memo_user'))}catch{return null}}
+function saveUser(){localStorage.setItem('memo_user',JSON.stringify(state.user))}
+async function api(path,method='GET',data){
+ const url=`${DB_URL}/${path}.json`;
+ const opts={method,headers:{'Content-Type':'application/json'}};
+ if(data!==undefined)opts.body=JSON.stringify(data);
+ const res=await fetch(url,opts);
+ if(!res.ok)throw new Error(`Firebase ${res.status}`);
+ return res.status===204?null:res.json();
+}
+async function put(path,data){return api(path,'PUT',data)}
+async function patch(path,data){return api(path,'PATCH',data)}
+async function post(path,data){return api(path,'POST',data)}
+function setConnection(ok){$('connection').textContent=ok?'● Live connected':'Connection issue';$('connection').style.color=ok?'var(--green)':'#ff8799';$('connection').style.borderColor=ok?'#285743':'#63303a'}
+function isBot(record){return !!record && (record.isBot===true || record.bot===true || String(record.accountType||record.type||'').toLowerCase()==='bot');}\nfunction initials(name){return (name||'M').trim().slice(0,1).toUpperCase()}
+function avatarHTML(user,size=''){const url=user?.avatar||'';return `<div class="avatar ${size}">${url?`<img src="${esc(url)}" alt="" onerror="this.remove()">`:esc(initials(user?.name))}</div>`}
+function currentUser(){if(!state.user){state.user={id:key(),name:'Member',bio:'',avatar:''};saveUser()}return state.user}
+async function ensureUser(){currentUser();try{const remote=await api(`${paths.users}/${state.user.id}`);if(remote){state.user={...remote,id:state.user.id};saveUser()}else await put(`${paths.users}/${state.user.id}`,state.user)}catch(e){console.warn(e)}renderProfile()}
+function renderProfile(){
+ const u=currentUser();$('sideName').textContent=u.name;$('sideAvatar').innerHTML=u.avatar?`<img src="${esc(u.avatar)}" alt="">`:esc(initials(u.name));
+ $('composerAvatar').textContent=initials(u.name);$('profileAvatar').innerHTML=u.avatar?`<img src="${esc(u.avatar)}" alt="">`:esc(initials(u.name));
+ $('profileName').textContent=u.name;$('profileHandle').textContent='@'+u.id.slice(2,10);$('nameInput').value=u.name;$('bioInput').value=u.bio||'';$('avatarInput').value=u.avatar||'';
+}
+function go(page){state.page=page;document.querySelectorAll('.section').forEach(x=>x.classList.toggle('active',x.id==='page-'+page));document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===page));$('pageTitle').textContent=({home:'Home',live:'Live status',chat:'Messages',community:'Communities',profile:'Profile'})[page];if(page==='profile')renderProfile()}
+document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));
+function timeLabel(ts){if(!ts)return 'Just now';const d=Date.now()-ts; if(d<60000)return 'Just now';if(d<3600000)return Math.floor(d/60000)+'m ago';if(d<86400000)return Math.floor(d/3600000)+'h ago';return new Date(ts).toLocaleDateString()}
+function renderFeed(){
+ const items=Object.entries(state.posts||{}).map(([id,p])=>({id,...p})).filter(p=>!isBot(p)).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+ $('feed').innerHTML=items.length?items.map(p=>`<article class="card"><div class="post-head">${avatarHTML(p)}<div class="meta"><b>${esc(p.name||'Member')}</b><div class="muted small">${timeLabel(p.createdAt)}</div></div>${p.uid===state.user.id?'<span class="tag">You</span>':''}</div><div class="post-text">${esc(p.text)}</div>${p.image?`<img class="post-image" src="${esc(p.image)}" alt="Post image" loading="lazy" onerror="this.style.display='none'">`:''}<div class="post-foot"><button data-like="${esc(p.id)}">♡ ${Number(p.likes||0)} Like</button><span class="muted small" style="padding:7px">${Number(p.comments||0)} comments</span>${p.uid===state.user.id?`<button data-delete="${esc(p.id)}">Delete</button>`:''}</div></article>`).join(''):'<div class="card empty">No posts yet. Be the first to share something.</div>';
+ $('postCount').textContent=items.filter(p=>p.uid===state.user.id).length;$('pulsePosts').textContent=items.length;
+}
+$('publishBtn').addEventListener('click',async()=>{const text=$('postInput').value.trim();if(!text)return toast('Write something first.');if(text.length>1500)return toast('Post is too long.');try{await post(paths.posts,{uid:state.user.id,name:state.user.name,avatar:state.user.avatar||'',text,createdAt:Date.now(),likes:0,comments:0});$('postInput').value='';toast('Post published');}catch(e){toast('Could not publish. Check connection.')}});
+$('feed').addEventListener('click',async e=>{const like=e.target.closest('[data-like]');const del=e.target.closest('[data-delete]');if(like){const id=like.dataset.like;const p=state.posts[id];if(!p)return;try{await patch(`${paths.posts}/${id}`,{likes:Number(p.likes||0)+1});}catch{toast('Like failed')}}if(del){if(!confirm('Delete this post?'))return;try{await api(`${paths.posts}/${del.dataset.delete}`,'DELETE');toast('Post deleted')}catch{toast('Delete failed')}}});
+function renderMessages(){const arr=Object.entries(state.messages||{}).map(([id,m])=>({id,...m})).filter(m=>!isBot(m)).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0)).slice(-100);$('messages').innerHTML=arr.length?arr.map(m=>`<div class="bubble ${m.uid===state.user.id?'mine':''}"><b class="small">${esc(m.name||'Member')}</b><div>${esc(m.text)}</div><div class="small" style="opacity:.65;text-align:right">${timeLabel(m.createdAt)}</div></div>`).join(''):'<div class="empty">No messages yet. Say hello!</div>';$('messages').scrollTop=$('messages').scrollHeight}
+$('chatForm').addEventListener('submit',async e=>{e.preventDefault();const text=$('chatInput').value.trim();if(!text)return;try{await post(paths.messages,{uid:state.user.id,name:state.user.name,text,createdAt:Date.now()});$('chatInput').value=''}catch{toast('Message could not send')}});
+$('communityForm').addEventListener('submit',async e=>{e.preventDefault();const name=$('communityName').value.trim(),description=$('communityDesc').value.trim();if(!name)return;try{await post(paths.communities,{name,description,creator:state.user.id,creatorName:state.user.name,createdAt:Date.now(),members:1});$('communityName').value='';$('communityDesc').value='';toast('Community created')}catch{toast('Could not create community')}});
+function renderCommunities(){const arr=Object.entries(state.communities||{}).map(([id,c])=>({id,...c})).filter(c=>!isBot(c)).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));$('communityList').innerHTML=arr.length?arr.map(c=>`<div class="card community-row"><div><h3>${esc(c.name)}</h3><div class="muted small">${esc(c.description||'A memo community')} · by ${esc(c.creatorName||'Member')}</div></div><span class="tag">${Number(c.members||1)} member</span></div>`).join(''):'<div class="card empty">No communities yet. Create the first one.</div>';$('pulseCommunities').textContent=arr.length}
+$('profileForm').addEventListener('submit',async e=>{e.preventDefault();const name=$('nameInput').value.trim();const avatar=$('avatarInput').value.trim();if(!name)return toast('Display name is required');if(avatar&&!/^https:\/\/.+/i.test(avatar))return toast('Avatar URL must start with https://');state.user.name=name;state.user.bio=$('bioInput').value.trim();state.user.avatar=avatar;saveUser();renderProfile();try{await put(`${paths.users}/${state.user.id}`,state.user);toast('Profile saved')}catch{toast('Saved on this device; cloud update failed')}});
+$('saveLive').addEventListener('click',async()=>{const status=$('liveStatus').value,message=$('liveMessage').value.trim();try{await put(`${paths.live}/${state.user.id}`,{uid:state.user.id,name:state.user.name,status,message,updatedAt:Date.now()});toast('Status updated')}catch{toast('Could not update status')}});
+function renderLive(){const arr=Object.values(state.live||{}).filter(u=>!isBot(u));$('liveList').innerHTML=arr.length?arr.map(u=>`<div class="person">${avatarHTML(u)}<div style="flex:1"><b>${esc(u.name||'Member')}</b><div class="muted small">${esc(u.message||'')}</div></div><span class="tag">${esc(u.status||'offline')}</span></div>`).join(''):'No status updates yet.';const mine=state.live[state.user.id];if(mine){$('liveStatus').value=mine.status||'offline';$('liveMessage').value=mine.message||''}}
+function updateAll(){renderFeed();renderMessages();renderCommunities();renderLive();setConnection(true)}
+function startRealtime(){
+ // Firebase Realtime Database REST streaming uses Server-Sent Events.
+ if(state.stream)state.stream.close();
+ const source=new EventSource(`${DB_URL}/.json?print=silent`);
+ source.addEventListener('put',ev=>{try{const data=JSON.parse(ev.data);const path=data.path||'/';const val=data.data;if(path==='/'){Object.assign(state,{users:val?.users||{},posts:val?.posts||{},messages:val?.messages||{},communities:val?.communities||{},live:val?.live||{}})}else{const parts=path.split('/').filter(Boolean);const root=parts[0];if(['posts','messages','communities','live'].includes(root)){if(parts.length===1)state[root]=val||{};else{state[root]=state[root]||{};if(val===null)delete state[root][parts[1]];else state[root][parts[1]]=val}}}updateAll()}catch(err){console.warn('Realtime parse',err)}});
+ source.addEventListener('patch',ev=>{try{const data=JSON.parse(ev.data);const parts=(data.path||'/').split('/').filter(Boolean);const root=parts.shift();if(!['posts','messages','communities','live'].includes(root))return;let target=state[root]||{};if(parts.length===0)Object.assign(target,data.data||{});else{target[parts[0]]=target[parts[0]]||{};Object.assign(target[parts[0]],data.data||{})}state[root]=target;updateAll()}catch{}});
+ source.addEventListener('cancel',()=>{setConnection(false);toast('Firebase access was denied')});
+ source.addEventListener('auth_revoked',()=>setConnection(false));
 
+ source.onopen=()=>setConnection(true);source.onerror=()=>setConnection(false);state.stream=source;
+}
+async function initialLoad(){
+ try{const [posts,messages,communities,live]=await Promise.all([api(paths.posts),api(paths.messages),api(paths.communities),api(paths.live)]);state.posts=posts||{};state.messages=messages||{};state.communities=communities||{};state.live=live||{};updateAll()}catch(e){setConnection(false);$('feed').innerHTML='<div class="card empty">Unable to connect to Firebase. Check your internet and database rules.</div>'}
+}
+async function init(){state.user=readUser()||{id:key(),name:'Member',bio:'',avatar:''};saveUser();await ensureUser();await initialLoad();startRealtime();renderProfile()}
+window.addEventListener('beforeunload',()=>state.stream?.close());
+init();
+})();
+</script>
+</body>
+</html>
